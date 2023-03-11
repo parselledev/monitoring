@@ -1,5 +1,12 @@
-import React from "react";
+import { Controls } from "../controls";
+import { Map } from "../map";
+import { AppContainer } from "./styled";
 
 export const App = () => {
-  return <div className="App">app</div>;
+  return (
+    <AppContainer>
+      <Controls />
+      <Map />
+    </AppContainer>
+  );
 };
