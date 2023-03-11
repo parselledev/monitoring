@@ -29,9 +29,5 @@ const signalSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-// noteSchema.plugin(autoIncrement, {
-//   inc_field: 'ticket',
-//   id: 'ticketNums',
-//   start_seq: 500,
-// });
-module.exports = mongoose.model('Signal', signalSchema);
+
+module.exports = mongoose.model('Signal', signalSchema, 'signals');
