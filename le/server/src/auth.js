@@ -16,11 +16,11 @@ export const auth = async () => {
 
   /** Для доступа по логину и паролю */
 
-  // await page.type("input[type='text']", "vector-sml@mail.ru");
+  // await page.type("input[type='text']", process.env.DOZOR_LOGIN);
   // await page.$eval(".btn-primary", async (elem) => await elem.click());
   //
   // await page.waitForSelector("input[type='password']", { visible: true });
-  // await page.type("input[type='password']", "19855891w");
+  // await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
 
   // await page.$eval(".btn-primary", async (elem) => await elem.click());
 
