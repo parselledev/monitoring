@@ -1,18 +1,18 @@
-import puppeteer from "puppeteer";
+const puppeteer = require('puppeteer');
 
 /**
  * кнопка реконнекта .forms__button forms__button_warning
  * */
 
-export const auth = async () => {
+module.exports = async () => {
   const browser = await puppeteer.launch({
     headless: false,
-    args: ["--no-sandbox"],
+    args: ['--no-sandbox'],
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
-  await page.goto("https://monitoring.tecel.ru", { waitUntil: "networkidle2" });
-  await page.waitForSelector("#tecel-passport");
+  await page.goto('https://monitoring.tecel.ru', { waitUntil: 'networkidle2' });
+  await page.waitForSelector('#tecel-passport');
 
   /** Для доступа по логину и паролю */
 
@@ -26,15 +26,15 @@ export const auth = async () => {
 
   /** ----------------------------------- */
 
-  await page.$eval(".btn-secondary", async (elem) => await elem.click());
+  await page.$eval('.btn-secondary', async (elem) => await elem.click());
 
-  await page.waitForSelector(".geomap-marker__arrow");
+  await page.waitForSelector('.geomap-marker__arrow');
 
   const dozor = await page.evaluate(() => {
     const getCircularReplacer = () => {
       const seen = new WeakSet();
       return (key, value) => {
-        if (typeof value === "object" && value !== null) {
+        if (typeof value === 'object' && value !== null) {
           if (seen.has(value)) {
             return;
           }

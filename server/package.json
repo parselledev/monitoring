@@ -1,7 +1,7 @@
 {
-  "name": "mern-auth-roles-backend",
-  "version": "4",
-  "description": "MERN-auth-roles a web application that alow you to manage authentication and roles of users using MERN (MongoDB Express Angular Node)",
+  "name": "tecel-monitor-backend",
+  "version": "1.0.0",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server",

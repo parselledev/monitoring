@@ -15,6 +15,7 @@ app.use(express.json());
 app.use('/', require('./routes/root'));
 
 const server = require('http').createServer(app);
+
 app.use('/signals', require('./routes/signalRoutes'));
 app.all('*', require('./routes/404'));
 

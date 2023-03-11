@@ -1,4 +1,4 @@
-export const initialDeviceState = {
+module.exports = {
   timestamp: null,
   /** Местоположение */
   geo: null,

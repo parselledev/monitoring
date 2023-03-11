@@ -1,9 +1,8 @@
-import { WebSocket } from "ws";
-import { auth } from "./auth.js";
-import { database } from "./database.js";
-import { initialDeviceState } from "./entities/initialDeviceState.js";
+const WebSocket = require('ws');
+const auth = require('/auth');
+const initialDeviceState = require('/entities/initialDeviceState');
 
-export const watcher = async () => {
+module.exports = async () => {
   const dozor = await auth();
   const connectionTocken = encodeURIComponent(
     dozor._dozor._garage._signal._connection_token
@@ -18,15 +17,16 @@ export const watcher = async () => {
   let prevDeviceState = initialDeviceState;
   let intervalCount = 1;
 
-  ws.on("open", () => {
+  ws.on('open', () => {
     setInterval(async () => {
       if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-        await database.addSignal(deviceState);
+        // await database.addSignal(deviceState);
+        console.log(deviceState);
         prevDeviceState = deviceState;
       }
     }, 5000);
 
-    ws.on("message", function (data) {
+    ws.on('message', function (data) {
       try {
         const signal = JSON.parse(
           JSON.parse(data.toString())?.M[0]?.A[0]
@@ -39,10 +39,8 @@ export const watcher = async () => {
         }
 
         deviceState = { ...mergedSignal, timestamp: Date.now() };
-
-        console.log(deviceState);
       } catch {
-        console.log("[X] Ошибка в сигнале");
+        console.log('[X] Ошибка в сигнале');
       }
     });
   });
