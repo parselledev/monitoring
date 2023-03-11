@@ -1,26 +1,26 @@
 import { createQuery } from "@farfetched/core";
 import { createEffect, createEvent, createStore, sample } from "effector";
-import { signalsApi } from "./api";
+import { tracksApi } from "./api";
 import { createGate } from "effector-react";
 
 export const ControlsGate = createGate();
 export const { open: controlsMounted, close: controlsUnmounted } = ControlsGate;
 
-const fxGetSignals = createEffect().use(signalsApi.getSignals);
+const fxGetTracks = createEffect().use(tracksApi.getTracks);
 
-export const signalsQuery = createQuery({
-  effect: fxGetSignals,
+export const tracksQuery = createQuery({
+  effect: fxGetTracks,
 });
 
-export const $currentSignal = createStore<Number | null>(null);
+export const $currentTrack = createStore<Number | null>(null);
 
-export const setCurrentSignal = createEvent<Number>();
+export const setCurrentTrack = createEvent<Number>();
 
-/** Запрос сигналов при маунте */
+/** Запрос треков при маунте */
 sample({
   clock: controlsMounted,
-  target: signalsQuery.start,
+  target: tracksQuery.start,
 });
 
-/** Обработка текущего сигнала */
-$currentSignal.on(setCurrentSignal, (_, value) => value);
+/** Обработка текущего трека */
+$currentTrack.on(setCurrentTrack, (_, value) => value);

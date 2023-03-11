@@ -2,10 +2,10 @@ import { useGate, useUnit } from "effector-react";
 import moment from "moment";
 import { ControlsContainer } from "./styled";
 import {
-  $currentSignal,
+  $currentTrack,
   ControlsGate,
-  setCurrentSignal,
-  signalsQuery,
+  setCurrentTrack,
+  tracksQuery,
 } from "./model";
 import React from "react";
 import {
@@ -20,21 +20,21 @@ import {
 export const Controls = () => {
   useGate(ControlsGate);
 
-  const { data, pending }: any = useUnit(signalsQuery);
-  const [currentSignal] = useUnit([$currentSignal]);
+  const { data, pending }: any = useUnit(tracksQuery);
+  const [currentTrack] = useUnit([$currentTrack]);
 
   if (pending || !data) return <CircularProgress />;
 
-  const handleSignalClick = (number: number) => {
-    setCurrentSignal(number);
+  const handleTrackClick = (number: number) => {
+    setCurrentTrack(number);
   };
 
-  const renderSignals = () =>
+  const renderTracks = () =>
     data.map((signal: any, index: number) => (
       <ListItemButton
         key={signal.id}
-        selected={currentSignal === index}
-        onClick={(event) => handleSignalClick(index)}
+        selected={currentTrack === index}
+        onClick={(event) => handleTrackClick(index)}
       >
         <Chip
           label={moment.unix(signal.start / 1000).format("DD.MM")}
@@ -52,7 +52,7 @@ export const Controls = () => {
 
   return (
     <ControlsContainer>
-      <List>{renderSignals()}</List>
+      <List>{renderTracks()}</List>
     </ControlsContainer>
   );
 };
