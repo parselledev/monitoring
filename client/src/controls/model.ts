@@ -1,5 +1,5 @@
 import { createQuery } from "@farfetched/core";
-import { createEffect, sample } from "effector";
+import { createEffect, createEvent, createStore, sample } from "effector";
 import { signalsApi } from "./api";
 import { createGate } from "effector-react";
 
@@ -12,8 +12,15 @@ export const signalsQuery = createQuery({
   effect: fxGetSignals,
 });
 
+export const $currentSignal = createStore<Number | null>(null);
+
+export const setCurrentSignal = createEvent<Number>();
+
+/** Запрос сигналов при маунте */
 sample({
   clock: controlsMounted,
-  filter: (data) => Boolean(data),
   target: signalsQuery.start,
 });
+
+/** Обработка текущего сигнала */
+$currentSignal.on(setCurrentSignal, (_, value) => value);

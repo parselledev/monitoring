@@ -3,6 +3,8 @@ require('express-async-errors');
 const express = require('express');
 const { logger, logEvents } = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
+const cors = require('cors');
+const corsConfigs = require('./config/corsConfigs');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn');
 const app = express();
@@ -11,6 +13,7 @@ const port = process.env.PORT || 3500;
 connectDB();
 
 app.use(logger);
+app.use(cors(corsConfigs));
 app.use(express.json());
 app.use('/', require('./routes/root'));
 
