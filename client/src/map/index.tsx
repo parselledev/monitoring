@@ -74,5 +74,5 @@ export const Map = () => {
     return () => map && map.destroy();
   }, [currentTrack, currentSegment]);
 
-  return <div id="map-container" style={{ width: "100%", height: "95vh" }} />;
+  return <div id="map-container" style={{ width: "100%", height: "100vh" }} />;
 };

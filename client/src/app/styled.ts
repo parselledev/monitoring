@@ -12,8 +12,3 @@ export const AppSidebar = styled(Paper)(() => ({
   gap: 20,
   gridTemplateRows: "1fr 400px",
 }));
-
-export const AppContent = styled("div")(() => ({
-  display: "grid",
-  gridTemplateRows: "1fr 5vh",
-}));

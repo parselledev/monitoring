@@ -1,7 +1,6 @@
 import { Controls } from "../controls";
 import { Map } from "../map";
-import { AppContainer, AppContent, AppSidebar } from "./styled";
-import { Timeline } from "../timeline";
+import { AppContainer, AppSidebar } from "./styled";
 import { Panel } from "../panel";
 
 export const App = () => {
@@ -12,10 +11,7 @@ export const App = () => {
         <Panel />
       </AppSidebar>
 
-      <AppContent>
-        <Map />
-        <Timeline />
-      </AppContent>
+      <Map />
     </AppContainer>
   );
 };
