@@ -15,23 +15,6 @@ export const { open: controlsMounted, close: controlsUnmounted } = ControlsGate;
 
 const fxGetTracks = createEffect().use(tracksApi.getTracks);
 
-// [
-//   {
-//     color: "#e84646",
-//     label: "A",
-//     coords: [
-//       [20.537042, 54.711877],
-//       [20.537693, 54.709871],
-//       [20.549342, 54.709811],
-//     ],
-//   },
-//   {
-//     color: "#43e843",
-//     label: "B",
-//     coords: [[20.549342, 54.709811]],
-//   },
-// ]
-
 export const tracksQuery = createQuery({
   effect: fxGetTracks,
   mapData: ({ result, params }: any) =>

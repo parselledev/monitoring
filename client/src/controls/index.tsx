@@ -1,6 +1,6 @@
 import { useGate, useUnit } from "effector-react";
 import moment from "moment";
-import { ControlsContainer, ControlsHeader } from "./styled";
+import { ControlsHeader } from "./styled";
 import {
   $currentTrackId,
   ControlsGate,
@@ -15,6 +15,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Paper,
   Typography,
 } from "@mui/material";
 
@@ -55,7 +56,7 @@ export const Controls = () => {
     });
 
   return (
-    <ControlsContainer>
+    <Paper>
       <ControlsHeader>
         <Typography variant="h5" gutterBottom>
           Треки
@@ -63,6 +64,6 @@ export const Controls = () => {
       </ControlsHeader>
 
       <List>{renderTracks()}</List>
-    </ControlsContainer>
+    </Paper>
   );
 };

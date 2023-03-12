@@ -3,23 +3,6 @@ import { memo, useEffect } from "react";
 import { useUnit } from "effector-react/compat";
 import { $currentTrack } from "../controls/model";
 
-// const segments = [
-//   {
-//     color: "#e84646",
-//     label: "A",
-//     coords: [
-//       [20.537042, 54.711877],
-//       [20.537693, 54.709871],
-//       [20.549342, 54.709811],
-//     ],
-//   },
-//   {
-//     color: "#43e843",
-//     label: "B",
-//     coords: [[20.549342, 54.709811]],
-//   },
-// ];
-
 export const Map = () => {
   const [currentTrack] = useUnit([$currentTrack]);
 
@@ -81,5 +64,5 @@ export const Map = () => {
     return () => map && map.destroy();
   }, [currentTrack]);
 
-  return <div id="map-container" style={{ width: "100%", height: "100vh" }} />;
+  return <div id="map-container" style={{ width: "100%", height: "95vh" }} />;
 };

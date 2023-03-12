@@ -1,12 +1,16 @@
 import { Controls } from "../controls";
 import { Map } from "../map";
-import { AppContainer } from "./styled";
+import { AppContainer, AppContent } from "./styled";
+import { Timeline } from "../timeline";
 
 export const App = () => {
   return (
     <AppContainer>
       <Controls />
-      <Map />
+      <AppContent>
+        <Map />
+        <Timeline />
+      </AppContent>
     </AppContainer>
   );
 };
