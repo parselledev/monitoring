@@ -10,8 +10,6 @@ module.exports = async () => {
   await page.goto('https://monitoring.tecel.ru', { waitUntil: 'networkidle2' });
   await page.waitForSelector('#tecel-passport');
 
-  /** Для доступа по логину и паролю */
-
   await page.type("input[type='text']", process.env.DOZOR_LOGIN);
   await page.$eval('.btn-primary', async (elem) => await elem.click());
 
@@ -19,10 +17,6 @@ module.exports = async () => {
   await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
 
   await page.$eval('.btn-primary', async (elem) => await elem.click());
-
-  /** ----------------------------------- */
-
-  // await page.$eval('.btn-secondary', async (elem) => await elem.click());
 
   await page.waitForSelector('.geomap-marker__arrow');
 
