@@ -56,7 +56,7 @@ export const Controls = () => {
     });
 
   return (
-    <Paper>
+    <Paper elevation={0}>
       <ControlsHeader>
         <Typography variant="h5" gutterBottom>
           Треки

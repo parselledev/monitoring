@@ -43,17 +43,25 @@ export const tracksQuery = createQuery({
     }),
 });
 
-export const $currentTrackId = createStore<Number | null>(null);
+export const $currentTrackId = createStore<number | null>(null);
 export const $currentTrack = combine(
   tracksQuery.$data,
   $currentTrackId,
   (tracks: any, currentId) =>
     tracks?.find((track: any) => track.id === currentId)
 );
+export const $currentSegmentIndex = createStore<number>(0);
+export const $currentSegment = combine(
+  $currentTrack,
+  $currentSegmentIndex,
+  (currentTrack, currentSegmentIndex) =>
+    currentTrack?.signals[currentSegmentIndex]
+);
 
 debug({ $currentTrack, $currentTrackId });
 
-export const setCurrentTrackId = createEvent<Number>();
+export const setCurrentTrackId = createEvent<number>();
+export const setCurrentSegmentIndex = createEvent<number>();
 
 /** Запрос треков при маунте */
 sample({
@@ -63,3 +71,6 @@ sample({
 
 /** Обработка текущего трека */
 $currentTrackId.on(setCurrentTrackId, (_, value) => value);
+
+/** Обработка текущего сегмента */
+$currentSegmentIndex.on(setCurrentSegmentIndex, (_, value) => value);

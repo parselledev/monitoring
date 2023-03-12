@@ -1,16 +1,30 @@
 import { Slider } from "@mui/material";
 import { TimelineContainer } from "./styled";
 import { useUnit } from "effector-react";
-import { $currentTrack } from "../controls/model";
+import {
+  $currentSegmentIndex,
+  $currentTrack,
+  setCurrentSegmentIndex,
+} from "../controls/model";
 
 export const Timeline = () => {
-  const [currentTrack] = useUnit([$currentTrack]);
+  const [currentTrack, currentSegmentIndex] = useUnit([
+    $currentTrack,
+    $currentSegmentIndex,
+  ]);
 
   if (!currentTrack) return null;
+
+  const handleChange = (event: Event, newValue: number | number[]) => {
+    if (typeof newValue === "number") {
+      setCurrentSegmentIndex(newValue);
+    }
+  };
 
   return (
     <TimelineContainer>
       <Slider
+        onChange={handleChange}
         defaultValue={0}
         step={1}
         marks
