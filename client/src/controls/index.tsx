@@ -13,7 +13,6 @@ import {
   CircularProgress,
   List,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   Paper,
   Typography,
@@ -25,7 +24,8 @@ export const Controls = () => {
   const { data, pending }: any = useUnit(tracksQuery);
   const [currentTrackId] = useUnit([$currentTrackId]);
 
-  if (pending || !data) return <CircularProgress />;
+  if (pending) return <CircularProgress />;
+  if (!data) return <Typography variant="h6">Нет треков</Typography>;
 
   const handleTrackClick = (id: number) => {
     setCurrentTrackId(id);
