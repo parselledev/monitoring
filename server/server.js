@@ -7,6 +7,7 @@ const cors = require('cors');
 const corsConfigs = require('./config/corsConfigs');
 const mongoose = require('mongoose');
 const connectDB = require('./config/dbConn');
+const scrapperService = require('./services/scrapper');
 const app = express();
 const port = process.env.PORT || 3500;
 
@@ -16,12 +17,9 @@ app.use(logger);
 app.use(cors(corsConfigs));
 app.use(express.json());
 app.use('/', require('./routes/root'));
-
 const server = require('http').createServer(app);
-
 app.use('/signals', require('./routes/signalRoutes'));
 app.all('*', require('./routes/404'));
-
 app.use(errorHandler);
 
 mongoose.connection.once('open', () => {
@@ -29,6 +27,8 @@ mongoose.connection.once('open', () => {
     console.log(
       `✅ Successfully Connected to MongoDB | Application running on port: ${port}`
     );
+
+    // scrapperService();
   });
 });
 

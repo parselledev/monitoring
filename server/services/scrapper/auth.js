@@ -1,9 +1,5 @@
 const puppeteer = require('puppeteer');
 
-/**
- * кнопка реконнекта .forms__button forms__button_warning
- * */
-
 module.exports = async () => {
   const browser = await puppeteer.launch({
     headless: false,
@@ -16,17 +12,17 @@ module.exports = async () => {
 
   /** Для доступа по логину и паролю */
 
-  // await page.type("input[type='text']", process.env.DOZOR_LOGIN);
-  // await page.$eval(".btn-primary", async (elem) => await elem.click());
-  //
-  // await page.waitForSelector("input[type='password']", { visible: true });
-  // await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
+  await page.type("input[type='text']", process.env.DOZOR_LOGIN);
+  await page.$eval('.btn-primary', async (elem) => await elem.click());
 
-  // await page.$eval(".btn-primary", async (elem) => await elem.click());
+  await page.waitForSelector("input[type='password']", { visible: true });
+  await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
+
+  await page.$eval('.btn-primary', async (elem) => await elem.click());
 
   /** ----------------------------------- */
 
-  await page.$eval('.btn-secondary', async (elem) => await elem.click());
+  // await page.$eval('.btn-secondary', async (elem) => await elem.click());
 
   await page.waitForSelector('.geomap-marker__arrow');
 

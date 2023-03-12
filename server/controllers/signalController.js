@@ -25,7 +25,21 @@ const getTracks = async (req, res) => {
   if (!result) {
     return res.status(400).json({ message: 'No Signals found' });
   }
-  res.json(result);
+
+  /** Если за проход была всего одна поездка, то руками формируем ответ
+   * Если несколько треков, то отправляем сразу result */
+  res.json(
+    result.length
+      ? result
+      : [
+          {
+            id: temp[0]._id,
+            start: temp[0].timestamp,
+            stop: temp[temp.length - 1].timestamp,
+            signals: temp,
+          },
+        ]
+  );
 
   // if (!signals) {
   //   return res.status(400).json({ message: 'No Notes found' });

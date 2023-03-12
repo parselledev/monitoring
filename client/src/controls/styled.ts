@@ -6,4 +6,5 @@ export const ControlsContainer = styled("div")(() => ({
   background: "white",
   borderRadius: "0 0 0 10px",
   boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+  overflowY: "scroll",
 }));

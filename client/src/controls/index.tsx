@@ -2,9 +2,9 @@ import { useGate, useUnit } from "effector-react";
 import moment from "moment";
 import { ControlsContainer } from "./styled";
 import {
-  $currentTrack,
+  $currentTrackId,
   ControlsGate,
-  setCurrentTrack,
+  setCurrentTrackId,
   tracksQuery,
 } from "./model";
 import React from "react";
@@ -21,30 +21,30 @@ export const Controls = () => {
   useGate(ControlsGate);
 
   const { data, pending }: any = useUnit(tracksQuery);
-  const [currentTrack] = useUnit([$currentTrack]);
+  const [currentTrackId] = useUnit([$currentTrackId]);
 
   if (pending || !data) return <CircularProgress />;
 
-  const handleTrackClick = (number: number) => {
-    setCurrentTrack(number);
+  const handleTrackClick = (id: number) => {
+    setCurrentTrackId(id);
   };
 
   const renderTracks = () =>
-    data.map((signal: any, index: number) => (
+    data.map((track: any, index: number) => (
       <ListItemButton
-        key={signal.id}
-        selected={currentTrack === index}
-        onClick={(event) => handleTrackClick(index)}
+        key={track.id}
+        selected={currentTrackId === track.id}
+        onClick={(event) => handleTrackClick(track.id)}
       >
         <Chip
-          label={moment.unix(signal.start / 1000).format("DD.MM")}
+          label={moment.unix(track.start / 1000).format("DD.MM")}
           style={{ marginRight: 10 }}
         />
         <ListItemText
           primary={`${moment
-            .unix(signal.start / 1000)
+            .unix(track.start / 1000)
             .format("h:m")} --- ${moment
-            .unix(signal.stop / 1000)
+            .unix(track.stop / 1000)
             .format("h:m")}`}
         />
       </ListItemButton>
