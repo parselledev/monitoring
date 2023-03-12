@@ -28,6 +28,7 @@ module.exports = () => {
       setInterval(async () => {
         if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
           await signalModel.create({ ...deviceState, timestamp: Date.now() });
+          console.log('Стейт сохранен в БД');
           prevDeviceState = deviceState;
         }
       }, DATABASE_INTERVAL_TIME);
@@ -49,9 +50,7 @@ module.exports = () => {
           }
 
           deviceState = { ...mergedSignal };
-        } catch {
-          console.log('[X] Ошибка в сигнале');
-        }
+        } catch {}
       });
     });
 
