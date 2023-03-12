@@ -49,7 +49,7 @@ export const $currentTrack = combine(
   (tracks: any, currentId) =>
     tracks?.find((track: any) => track.id === currentId)
 );
-export const $currentSegmentId = createStore<number>(0);
+export const $currentSegmentId = createStore<number | null>(null);
 export const $currentSegment = combine(
   $currentTrack,
   $currentSegmentId,
