@@ -1,10 +1,13 @@
 import { load } from "@2gis/mapgl";
 import { memo, useEffect } from "react";
 import { useUnit } from "effector-react/compat";
-import { $currentTrack } from "../controls/model";
+import { $currentSegment, $currentTrack } from "../controls/model";
 
 export const Map = () => {
-  const [currentTrack] = useUnit([$currentTrack]);
+  const [currentTrack, currentSegment] = useUnit([
+    $currentTrack,
+    $currentSegment,
+  ]);
 
   const createRoute = (mapgl: any, map: any) => {
     if (!currentTrack) return null;
@@ -49,20 +52,27 @@ export const Map = () => {
 
   useEffect(() => {
     let map: any = null;
-    console.log("test");
     load().then((mapgl) => {
       map = new mapgl.Map("map-container", {
-        center: [20.522829, 54.71246],
+        center: currentSegment
+          ? [currentSegment.geo.lon, currentSegment.geo.lat]
+          : currentTrack?.segments[0].coords[0] || [20.522829, 54.71246],
         zoom: 15,
         key: "6aa7363e-cb3a-11ea-b2e4-f71ddc0b6dcb",
       });
+
+      if (currentSegment) {
+        new mapgl.Marker(map, {
+          coordinates: [currentSegment.geo.lon, currentSegment.geo.lat],
+        });
+      }
 
       createRoute(mapgl, map);
     });
 
     // Удаляем карту при размонтировании компонента
     return () => map && map.destroy();
-  }, [currentTrack]);
+  }, [currentTrack, currentSegment]);
 
   return <div id="map-container" style={{ width: "100%", height: "95vh" }} />;
 };
