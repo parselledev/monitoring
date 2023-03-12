@@ -1,6 +1,6 @@
 import { useGate, useUnit } from "effector-react";
 import moment from "moment";
-import { ControlsContainer } from "./styled";
+import { ControlsContainer, ControlsHeader } from "./styled";
 import {
   $currentTrackId,
   ControlsGate,
@@ -15,6 +15,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Typography,
 } from "@mui/material";
 
 export const Controls = () => {
@@ -30,28 +31,37 @@ export const Controls = () => {
   };
 
   const renderTracks = () =>
-    data.map((track: any, index: number) => (
-      <ListItemButton
-        key={track.id}
-        selected={currentTrackId === track.id}
-        onClick={(event) => handleTrackClick(track.id)}
-      >
-        <Chip
-          label={moment.unix(track.start / 1000).format("DD.MM")}
-          style={{ marginRight: 10 }}
-        />
-        <ListItemText
-          primary={`${moment
-            .unix(track.start / 1000)
-            .format("h:m")} --- ${moment
-            .unix(track.stop / 1000)
-            .format("h:m")}`}
-        />
-      </ListItemButton>
-    ));
+    data.map((track: any, index: number) => {
+      const startDate = moment.unix(track.start / 1000);
+      const stopDate = moment.unix(track.stop / 1000);
+      const duration = moment.duration(stopDate.diff(startDate)).minutes();
+
+      return (
+        <ListItemButton
+          key={track.id}
+          selected={currentTrackId === track.id}
+          onClick={(event) => handleTrackClick(track.id)}
+        >
+          <Chip
+            label={moment.unix(track.start / 1000).format("DD.MM")}
+            style={{ marginRight: 10 }}
+          />
+          <ListItemText
+            primary={`${startDate.format("h:m")} - ${stopDate.format("h:m")}`}
+          />
+          <Chip label={`${duration} минут`} variant="outlined" />
+        </ListItemButton>
+      );
+    });
 
   return (
     <ControlsContainer>
+      <ControlsHeader>
+        <Typography variant="h5" gutterBottom>
+          Треки
+        </Typography>
+      </ControlsHeader>
+
       <List>{renderTracks()}</List>
     </ControlsContainer>
   );
