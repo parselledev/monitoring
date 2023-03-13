@@ -1,5 +1,4 @@
 const auth = require('./auth');
-const initialDeviceState = require('./entities/initialDeviceState');
 const signalModel = require('../../models/signal');
 const WebSocket = require('ws');
 
@@ -7,8 +6,8 @@ const AUTH_INTERVAL_TIME = 1000 * 60 * 5; // 5 мин.
 const DATABASE_INTERVAL_TIME = 500;
 
 module.exports = () => {
-  let deviceState = initialDeviceState;
-  let prevDeviceState = initialDeviceState;
+  let deviceState = {};
+  let prevDeviceState = {};
 
   const watcher = async () => {
     const dozor = await auth();

@@ -18,7 +18,7 @@ app.use(cors(corsConfigs));
 app.use(express.json());
 app.use('/', require('./routes/root'));
 const server = require('http').createServer(app);
-app.use('/signals', require('./routes/signalRoutes'));
+app.use('/dozor', require('./routes/dozorRoutes'));
 app.all('*', require('./routes/404'));
 app.use(errorHandler);
 
@@ -27,8 +27,8 @@ mongoose.connection.once('open', () => {
     console.log(
       `✅ Successfully Connected to MongoDB | Application running on port: ${port}`
     );
-
-    scrapperService();
+    //
+    // scrapperService();
   });
 });
 

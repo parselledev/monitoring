@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const signalSchema = new mongoose.Schema(
+const deviceStateSchema = new mongoose.Schema(
   {
     timestamp: Number,
     geo: {
@@ -27,4 +27,8 @@ const signalSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Signal', signalSchema, 'signals');
+module.exports = mongoose.model(
+  'DeviceState',
+  deviceStateSchema,
+  'deviceState'
+);

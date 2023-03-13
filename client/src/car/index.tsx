@@ -1,5 +1,4 @@
 import { Paper } from "@mui/material";
-import { CarDoor } from "./types";
 import carImg from "./img/car.png";
 import driverDoorImg from "./img/door-front-left-opened.png";
 import frontPassDoorImg from "./img/door-front-right-opened.png";
