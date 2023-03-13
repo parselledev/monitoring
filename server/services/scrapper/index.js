@@ -16,6 +16,8 @@ module.exports = async () => {
   let deviceState = deviceStateRemote;
   let prevDeviceState = deviceStateRemote;
 
+  console.log('deviceState', deviceState);
+
   const watcher = async () => {
     const dozor = await auth();
 
@@ -28,8 +30,6 @@ module.exports = async () => {
     const lkId = dozor._dozor._garage._profile_id;
     const url = `wss://monitoring.tecel.ru/url_signal_r/connect?transport=webSockets&clientProtocol=1.5&connectionToken=${connectionToken}&connectionData=%5B%7B%22name%22%3A%22ControlService%22%7D%5D&tid=0&Lang=ru&SessionGuid=${sessionId}&ClientData=%7B%22AppName%22%3A%22Prizrak+WEB+Monitoring%22%2C%22AppVersion%22%3A%221.0.65%22%2C%22AppHost%22%3A%22monitoring.tecel.ru%22%2C%22IsUserDataAvailable%22%3Atrue%2C%22AdditionalInfo%22%3A%7B%7D%7D`;
     const ws = await new WebSocket(url.trim());
-
-    ws.on('open', () => {});
 
     ws.on('message', async (data) => {
       try {
@@ -47,11 +47,14 @@ module.exports = async () => {
           mergedSignal.guard = 'SafeGuardOff';
         }
 
+        console.log('mergedSignal', mergedSignal);
+
         deviceState = { ...mergedSignal };
 
         if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
           await signalModel.create({ ...deviceState, timestamp: Date.now() });
           await deviceStateModel.findOneAndUpdate(deviceState);
+
           console.log('Сохранено в БД');
           prevDeviceState = deviceState;
         }
