@@ -4,15 +4,12 @@ module.exports = async () => {
   const serviceUrl = process.env.SERVICE_IRL;
 
   const browser = await puppeteer.launch({
-    headless: false,
-    args: ['--no-sandbox'],
+    // args: ['--no-sandbox'],
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
 
-  const serviceLoaded = false;
-
-  while (serviceLoaded === false) {
+  while (true) {
     try {
       await page.goto(serviceUrl, { waitUntil: 'networkidle2' });
       await page.waitForSelector('#tecel-passport');

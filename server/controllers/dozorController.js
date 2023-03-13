@@ -49,7 +49,7 @@ const getTracks = async (req, res) => {
 };
 
 const getDeviceState = async (req, res) => {
-  const deviceStateData = deviceState.findOne();
+  const deviceStateData = await deviceState.findOne();
 
   if (!deviceStateData) {
     return res.status(400).json({ message: 'deviceState not found' });
