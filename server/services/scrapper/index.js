@@ -4,7 +4,6 @@ const deviceStateModel = require('../../models/deviceState');
 const auth = require('./auth');
 
 const AUTH_INTERVAL_TIME = 1000 * 60 * 5; // 5 мин.
-const DATABASE_INTERVAL_TIME = 5000;
 
 module.exports = async () => {
   const deviceStateRemote = await deviceStateModel.findOne().lean();
