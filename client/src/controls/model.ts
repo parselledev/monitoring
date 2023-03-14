@@ -8,6 +8,7 @@ import {
 } from "effector";
 import { tracksApi } from "./api";
 import { createGate } from "effector-react";
+import { reset } from "patronum";
 
 export const ControlsGate = createGate();
 export const { open: controlsMounted, close: controlsUnmounted } = ControlsGate;
@@ -53,8 +54,13 @@ export const $currentSegmentId = createStore<number | null>(null);
 export const $currentSegment = combine(
   $currentTrack,
   $currentSegmentId,
-  (currentTrack, currentSegmentId) =>
-    currentTrack?.signals.find((signal: any) => signal._id === currentSegmentId)
+  (currentTrack, currentSegmentId) => {
+    if (!currentSegmentId) return null;
+
+    return currentTrack?.signals.find(
+      (signal: any) => signal._id === currentSegmentId
+    );
+  }
 );
 
 export const setCurrentTrackId = createEvent<number>();
@@ -71,3 +77,8 @@ $currentTrackId.on(setCurrentTrackId, (_, value) => value);
 
 /** Обработка текущего сегмента */
 $currentSegmentId.on(setCurrentSegmentId, (_, value) => value);
+
+reset({
+  clock: setCurrentTrackId,
+  target: [$currentSegmentId],
+});

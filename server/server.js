@@ -28,7 +28,7 @@ mongoose.connection.once('open', () => {
       `✅ Successfully Connected to MongoDB | Application running on port: ${port}`
     );
 
-    scrapperService();
+    // scrapperService();
   });
 });
 

@@ -1,25 +1,41 @@
 const signal = require('../models/signal');
 const deviceState = require('../models/deviceState');
+const { sign } = require('jsonwebtoken');
+
+const GUARD_ON = 'SafeGuardOn';
+const GUARD_OFF = 'SafeGuardOff';
 
 const getTracks = async (req, res) => {
   const signalsData = await signal.find();
 
   const result = [];
   let temp = [];
+  let currentType = null;
+
+  signalsData.filter(
+    (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.guard
+  );
 
   signalsData.forEach((signal, index) => {
-    if (signal.guard === 'SafeGuardOn') {
-      if (temp.length) {
-        result.push({
-          id: temp[0]._id,
-          start: temp[0].timestamp,
-          stop: temp[temp.length - 1].timestamp,
-          signals: temp,
-        });
-      }
-      temp = [];
-    } else if (signal.guard === 'SafeGuardOff' || signal.guard === null) {
+    if (index === 0) {
       temp.push(signal);
+      currentType = signal.guard;
+      return;
+    }
+
+    if (currentType === signal.guard) {
+      temp.push(signal);
+    } else if (currentType !== signal.guard) {
+      result.push({
+        id: temp[0]._id || 'asd',
+        type: currentType === GUARD_ON ? 'parking' : 'moving',
+        start: temp[0].timestamp,
+        stop: temp[temp.length - 1].timestamp,
+        signals: temp,
+      });
+      temp = [];
+      temp.push(signal);
+      currentType = signal.guard;
     }
   });
 

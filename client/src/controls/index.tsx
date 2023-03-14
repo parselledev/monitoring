@@ -13,10 +13,11 @@ import {
   CircularProgress,
   List,
   ListItemButton,
-  ListItemText,
   Paper,
   Typography,
 } from "@mui/material";
+import LocalParkingIcon from "@mui/icons-material/LocalParking";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 
 export const Controls = () => {
   useGate(ControlsGate);
@@ -42,15 +43,30 @@ export const Controls = () => {
           key={track.id}
           selected={currentTrackId === track.id}
           onClick={(event) => handleTrackClick(track.id)}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "auto auto auto 1fr auto",
+            gap: 5,
+            cursor: "pointer",
+          }}
         >
-          <Chip
-            label={moment.unix(track.start / 1000).format("DD.MM")}
-            style={{ marginRight: 10 }}
-          />
-          <ListItemText
-            primary={`${startDate.format("h:m")} - ${stopDate.format("h:m")}`}
-          />
-          <Chip label={`${duration} минут`} variant="outlined" />
+          {track.type === "parking" ? (
+            <LocalParkingIcon />
+          ) : (
+            <DirectionsCarIcon />
+          )}
+
+          <span style={{ marginRight: 10 }}>
+            {moment.unix(track.start / 1000).format("DD.MM")}
+          </span>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}
+          >
+            <Chip label={`${startDate.format("HH:MM")}`} />
+            <Chip label={`${stopDate.format("HH:MM")}`} />
+          </div>
+
+          <Chip label={`${duration} мин`} variant="outlined" />
         </ListItemButton>
       );
     });

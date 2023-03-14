@@ -8,7 +8,6 @@ import {
   Typography,
 } from "@mui/material";
 import SpeedIcon from "@mui/icons-material/Speed";
-import RotateLeftOutlinedIcon from "@mui/icons-material/RotateLeftOutlined";
 import React from "react";
 import { Car } from "../car";
 import { useUnit } from "effector-react";
@@ -69,14 +68,6 @@ export const Panel = () => {
               </ListItemIcon>
               <ListItemText primary="Скорость" />
               <ListItemText primary={`${currentSegment?.speed} км/ч`} />
-            </ListItem>
-
-            <ListItem>
-              <ListItemIcon>
-                <RotateLeftOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Обороты" />
-              <ListItemText primary={`${currentSegment?.rpm}`} />
             </ListItem>
           </List>
         </>
