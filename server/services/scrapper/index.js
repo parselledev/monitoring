@@ -6,7 +6,32 @@ const auth = require('./auth');
 const AUTH_INTERVAL_TIME = 1000 * 60 * 5; // 5 мин.
 
 module.exports = async () => {
-  const deviceStateRemote = await deviceStateModel.findOne().lean();
+  let deviceStateRemote = await deviceStateModel.findOne().lean();
+
+  if (!deviceStateRemote) {
+    const createdRemote = {
+      geo: null,
+      guard: 'SafeGuardOn',
+      central_lock: null,
+      parking_brake: null,
+      engine_block: null,
+      immobilizer: null,
+      ignition_switch: null,
+      gear_in_park_mode: null,
+      speed: null,
+      rpm: null,
+      driver_door: null,
+      front_pass_door: null,
+      rear_left_door: null,
+      rear_right_door: null,
+      trunk: null,
+      hood: null,
+      service_state_ext_update_time: null,
+    };
+    await deviceStateModel.create(createdRemote);
+
+    deviceStateRemote = createdRemote;
+  }
 
   delete deviceStateRemote._id;
   delete deviceStateRemote.updatedAt;
