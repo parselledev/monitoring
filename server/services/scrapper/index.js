@@ -15,8 +15,6 @@ module.exports = async () => {
   let deviceState = deviceStateRemote;
   let prevDeviceState = deviceStateRemote;
 
-  console.log('deviceState', deviceState);
-
   const watcher = async () => {
     const dozor = await auth();
 
@@ -41,12 +39,6 @@ module.exports = async () => {
         for (const [key, value] of Object.entries(deviceState)) {
           mergedSignal[key] = signal[key] || value;
         }
-
-        if (mergedSignal.speed > 1) {
-          mergedSignal.guard = 'SafeGuardOff';
-        }
-
-        console.log('mergedSignal', mergedSignal);
 
         deviceState = { ...mergedSignal };
 
