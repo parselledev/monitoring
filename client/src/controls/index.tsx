@@ -79,7 +79,9 @@ export const Controls = () => {
         </Typography>
       </ControlsHeader>
 
-      <List>{renderTracks()}</List>
+      <List style={{ maxHeight: 650, overflowY: "scroll" }}>
+        {renderTracks()} {renderTracks()}
+      </List>
     </Paper>
   );
 };
