@@ -20,7 +20,6 @@ const deviceStateSchema = new mongoose.Schema(
     rear_right_door: String,
     trunk: String,
     hood: String,
-    createdAt: null,
   },
   {
     timestamps: true,
