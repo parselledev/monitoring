@@ -4,7 +4,7 @@ module.exports = async () => {
   const serviceUrl = process.env.SERVICE_IRL;
 
   const browser = await puppeteer.launch({
-    // executablePath: '/usr/bin/chromium-browser',
+    executablePath: '/usr/bin/chromium-browser',
     args: [
       '--disable-setuid-sandbox',
       '--no-sandbox',
