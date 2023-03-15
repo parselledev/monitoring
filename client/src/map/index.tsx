@@ -1,7 +1,40 @@
 import { load } from "@2gis/mapgl";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { useUnit } from "effector-react/compat";
 import { $currentSegment, $currentTrack } from "../controls/model";
+
+// useEffect(() => {
+//   let map: any = null;
+//   load().then((mapgl) => {
+//     map = new mapgl.Map("map-container", {
+//       center: currentSegment
+//         ? [currentSegment.geo.lon, currentSegment.geo.lat]
+//         : currentTrack?.segments[0].coords[0] || [20.522829, 54.71246],
+//       zoom: 16,
+//       key: "6aa7363e-cb3a-11ea-b2e4-f71ddc0b6dcb",
+//     });
+//
+//     if (currentSegment) {
+//       new mapgl.Marker(map, {
+//         coordinates: [currentSegment.geo.lon, currentSegment.geo.lat],
+//       });
+//     }
+//
+//     createRoute(mapgl, map);
+//   });
+//
+//   // Удаляем карту при размонтировании компонента
+//   return () => map && map.destroy();
+// }, [currentTrack, currentSegment]);
+
+const MapWrapper = memo(
+  () => {
+    return (
+      <div id="map-container" style={{ width: "100%", height: "100vh" }} />
+    );
+  },
+  () => true
+);
 
 export const Map = () => {
   const [currentTrack, currentSegment] = useUnit([
@@ -73,6 +106,9 @@ export const Map = () => {
     // Удаляем карту при размонтировании компонента
     return () => map && map.destroy();
   }, [currentTrack, currentSegment]);
-
-  return <div id="map-container" style={{ width: "100%", height: "100vh" }} />;
+  return (
+    <div style={{ width: "100%", height: "100vh" }}>
+      <MapWrapper />
+    </div>
+  );
 };
