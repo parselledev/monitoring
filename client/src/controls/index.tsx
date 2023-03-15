@@ -34,8 +34,8 @@ export const Controls = () => {
 
   const renderTracks = () =>
     data.map((track: any, index: number) => {
-      const startDate = moment.unix(track.start / 1000);
-      const stopDate = moment.unix(track.stop / 1000);
+      const startDate = moment(track.start);
+      const stopDate = moment(track.stop);
       const duration = moment.duration(stopDate.diff(startDate)).minutes();
 
       return (
@@ -62,8 +62,8 @@ export const Controls = () => {
           <div
             style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}
           >
-            <Chip label={`${startDate.format("HH:MM")}`} />
-            <Chip label={`${stopDate.format("HH:MM")}`} />
+            <Chip label={`${startDate.format("HH:mm")}`} />
+            <Chip label={`${stopDate.format("HH:mm")}`} />
           </div>
 
           <Chip label={`${duration} мин`} variant="outlined" />
@@ -79,8 +79,8 @@ export const Controls = () => {
         </Typography>
       </ControlsHeader>
 
-      <List style={{ maxHeight: 650, overflowY: "scroll" }}>
-        {renderTracks()} {renderTracks()}
+      <List style={{ maxHeight: "100%", overflowY: "scroll" }}>
+        {renderTracks()}
       </List>
     </Paper>
   );
