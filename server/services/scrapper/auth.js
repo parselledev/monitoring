@@ -4,8 +4,10 @@ module.exports = async () => {
   const serviceUrl = process.env.SERVICE_IRL;
 
   const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/chromium-browser',
     // args: ['--no-sandbox'],
   });
+
   const page = await browser.newPage();
   await page.setViewport({ width: 1366, height: 768 });
 
