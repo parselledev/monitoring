@@ -10,6 +10,7 @@ module.exports = async () => {
 
   if (!deviceStateRemote) {
     const createdRemote = {
+      createdAt: null,
       geo: { lat: 0, lon: 0 },
       guard: 'SafeGuardOn',
       central_lock: null,

@@ -24,7 +24,20 @@ const getTracks = async (req, res) => {
       return;
     }
 
-    if (currentType === signal.gear_in_park_mode) {
+    if (
+      currentType === signal.gear_in_park_mode &&
+      index === signalsData.length - 1
+    ) {
+      temp.push(signal);
+      result.push({
+        id: temp[0]._id || 'asd',
+        type: currentType === PARK_ON ? 'parking' : 'moving',
+        start: temp[0].timestamp,
+        stop: temp[temp.length - 1].timestamp,
+        signals: temp,
+      });
+      temp = [];
+    } else if (currentType === signal.gear_in_park_mode) {
       temp.push(signal);
     } else if (currentType !== signal.gear_in_park_mode) {
       result.push({

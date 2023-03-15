@@ -13,7 +13,6 @@ import {
   CircularProgress,
   List,
   ListItemButton,
-  Paper,
   Typography,
 } from "@mui/material";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
@@ -72,16 +71,16 @@ export const Controls = () => {
     });
 
   return (
-    <Paper elevation={0}>
+    <div>
       <ControlsHeader>
         <Typography variant="h5" gutterBottom>
           Треки
         </Typography>
       </ControlsHeader>
 
-      <List style={{ maxHeight: "100%", overflowY: "scroll" }}>
+      <List style={{ maxHeight: "90%", overflowY: "scroll" }}>
         {renderTracks()}
       </List>
-    </Paper>
+    </div>
   );
 };

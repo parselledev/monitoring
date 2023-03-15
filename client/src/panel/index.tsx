@@ -1,13 +1,4 @@
-import {
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Pagination,
-  Paper,
-  Typography,
-} from "@mui/material";
-import SpeedIcon from "@mui/icons-material/Speed";
+import { Pagination, Paper, Typography } from "@mui/material";
 import React from "react";
 import { Car } from "../car";
 import { useUnit } from "effector-react";
@@ -57,21 +48,7 @@ export const Panel = () => {
         onChange={handleChange}
       />
 
-      {currentSegment ? (
-        <>
-          <Car />
-
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <SpeedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Скорость" />
-              <ListItemText primary={`${currentSegment?.speed} км/ч`} />
-            </ListItem>
-          </List>
-        </>
-      ) : null}
+      {currentSegment ? <Car /> : null}
     </Paper>
   );
 };

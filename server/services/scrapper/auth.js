@@ -10,7 +10,6 @@ module.exports = async () => {
       '--no-sandbox',
       '--disable-gpu',
       '--no-first-run',
-      // `--proxy-server=${proxyServer}`,
     ],
   });
 

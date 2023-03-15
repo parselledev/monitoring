@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const signalSchema = new mongoose.Schema(
   {
+    createdAt: { type: Date, expires: 60 * 60 * 24 * 2 }, // Каждые 2 дня
     timestamp: Number,
     geo: {
       lat: Number,
