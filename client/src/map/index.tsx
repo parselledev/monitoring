@@ -1,5 +1,5 @@
 import { load } from "@2gis/mapgl";
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 import { useUnit } from "effector-react/compat";
 import { $currentSegment, $currentTrack } from "../controls/model";
 
@@ -57,7 +57,7 @@ export const Map = () => {
         center: currentSegment
           ? [currentSegment.geo.lon, currentSegment.geo.lat]
           : currentTrack?.segments[0].coords[0] || [20.522829, 54.71246],
-        zoom: 15,
+        zoom: 16,
         key: "6aa7363e-cb3a-11ea-b2e4-f71ddc0b6dcb",
       });
 
