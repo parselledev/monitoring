@@ -27,6 +27,6 @@ const signalSchema = new mongoose.Schema(
   }
 );
 
-signalSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 2 });
+signalSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 });
 
 module.exports = mongoose.model('Signal', signalSchema, 'signals');
