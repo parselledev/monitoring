@@ -83,5 +83,5 @@ $currentMark.on(setCurrentMark, (_, value) => value);
 
 reset({
   clock: setCurrentTrackId,
-  target: [$currentSegmentId],
+  target: [$currentSegmentId, $currentMark],
 });
