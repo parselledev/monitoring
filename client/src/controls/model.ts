@@ -22,8 +22,21 @@ export const tracksQuery = createQuery({
       const signals = track.signals;
       const lastSignal = signals[signals.length - 1];
 
+      let alert = null;
+
+      signals.forEach((signal: any) => {
+        if (
+          signal.front_pass_door === "Open" ||
+          signal.hood === "Open" ||
+          signal.trunk === "Open"
+        ) {
+          alert = true;
+        }
+      });
+
       return {
         ...track,
+        alert: alert,
         segments: [
           {
             color: "#e84646",

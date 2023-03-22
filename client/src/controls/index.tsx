@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import WarningIcon from "@mui/icons-material/Warning";
 
 export const Controls = () => {
   useGate(ControlsGate);
@@ -45,7 +46,7 @@ export const Controls = () => {
           onClick={(event) => handleTrackClick(track.id)}
           style={{
             display: "grid",
-            gridTemplateColumns: "auto auto auto auto auto",
+            gridTemplateColumns: "auto auto auto auto auto auto",
             gap: 5,
             cursor: "pointer",
           }}
@@ -67,6 +68,8 @@ export const Controls = () => {
           </div>
 
           <Chip label={duration} variant="outlined" />
+
+          {track.alert ? <WarningIcon color="warning" /> : null}
         </ListItemButton>
       );
     });

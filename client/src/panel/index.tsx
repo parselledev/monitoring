@@ -45,6 +45,8 @@ export const Panel = () => {
         display: "grid",
         gap: 10,
         gridTemplateColumns: "250px",
+        justifyItems: "start",
+        justifyContent: "start",
       }}
     >
       <Typography variant="h5" gutterBottom>

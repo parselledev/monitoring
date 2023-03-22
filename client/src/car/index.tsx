@@ -36,6 +36,7 @@ export const Car = () => {
         width: 310,
         height: 200,
         background: `url(${carImg}) no-repeat 18px 40px`,
+        transform: "scale(0.8) translateX(-40px)",
       }}
     >
       {driverDoorSrc && (
