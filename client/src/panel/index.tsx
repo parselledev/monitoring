@@ -1,4 +1,4 @@
-import { Pagination, Paper, Typography } from "@mui/material";
+import { Button, Pagination, Paper, Typography } from "@mui/material";
 import React from "react";
 import { Car } from "../car";
 import { useUnit } from "effector-react";
@@ -6,6 +6,7 @@ import {
   $currentSegment,
   $currentSegmentId,
   $currentTrack,
+  setCurrentMark,
   setCurrentSegmentId,
 } from "../controls/model";
 
@@ -32,10 +33,22 @@ export const Panel = () => {
     setCurrentSegmentId(panelData[value - 1]._id);
   };
 
+  const handleMarkClick = () => {
+    setCurrentMark([currentSegment.geo.lon, currentSegment.geo.lat]);
+  };
+
   return (
-    <Paper elevation={0}>
+    <Paper
+      elevation={0}
+      style={{
+        padding: 15,
+        display: "grid",
+        gap: 10,
+        gridTemplateColumns: "250px",
+      }}
+    >
       <Typography variant="h5" gutterBottom>
-        Ключевые моменты трека
+        Ключевые моменты
       </Typography>
 
       <Pagination
@@ -48,7 +61,14 @@ export const Panel = () => {
         onChange={handleChange}
       />
 
-      {currentSegment ? <Car /> : null}
+      {currentSegment ? (
+        <>
+          <Car />
+          <Button variant="contained" onClick={handleMarkClick}>
+            Показать на карте
+          </Button>
+        </>
+      ) : null}
     </Paper>
   );
 };

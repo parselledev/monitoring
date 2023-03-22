@@ -61,9 +61,11 @@ export const $currentSegment = combine(
     );
   }
 );
+export const $currentMark = createStore<any>(null);
 
 export const setCurrentTrackId = createEvent<number>();
 export const setCurrentSegmentId = createEvent<number>();
+export const setCurrentMark = createEvent<any>();
 
 /** Запрос треков при маунте */
 sample({
@@ -76,6 +78,8 @@ $currentTrackId.on(setCurrentTrackId, (_, value) => value);
 
 /** Обработка текущего сегмента */
 $currentSegmentId.on(setCurrentSegmentId, (_, value) => value);
+
+$currentMark.on(setCurrentMark, (_, value) => value);
 
 reset({
   clock: setCurrentTrackId,

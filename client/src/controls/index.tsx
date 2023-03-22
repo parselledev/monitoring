@@ -1,6 +1,5 @@
 import { useGate, useUnit } from "effector-react";
 import moment from "moment";
-import { ControlsHeader } from "./styled";
 import {
   $currentTrackId,
   ControlsGate,
@@ -24,7 +23,7 @@ export const Controls = () => {
   const { data, pending }: any = useUnit(tracksQuery);
   const [currentTrackId] = useUnit([$currentTrackId]);
 
-  if (pending) return <CircularProgress />;
+  if (pending) return <CircularProgress style={{ margin: "50px auto" }} />;
   if (!data) return <Typography variant="h6">Нет треков</Typography>;
 
   const handleTrackClick = (id: number) => {
@@ -37,8 +36,7 @@ export const Controls = () => {
       const stopDate = moment(track.stop);
 
       const dif = moment.duration(stopDate.diff(startDate));
-      const duration = [`${dif.hours()} ч`, `${dif.minutes()} мин`].join(" : ");
-      // console.log('dif in Mins: ', (dif.hours() * 60) + dif.minutes());
+      const duration = `${dif.hours()} ч : ${dif.minutes()} мин`;
 
       return (
         <ListItemButton
@@ -47,7 +45,7 @@ export const Controls = () => {
           onClick={(event) => handleTrackClick(track.id)}
           style={{
             display: "grid",
-            gridTemplateColumns: "auto auto auto 1fr auto",
+            gridTemplateColumns: "auto auto auto auto auto",
             gap: 5,
             cursor: "pointer",
           }}
@@ -74,14 +72,13 @@ export const Controls = () => {
     });
 
   return (
-    <div>
-      <ControlsHeader>
-        <Typography variant="h5" gutterBottom>
-          Треки
-        </Typography>
-      </ControlsHeader>
-
-      <List style={{ maxHeight: "60vh", overflowY: "scroll" }}>
+    <div
+      style={{
+        height: "100%",
+        overflow: "hidden",
+      }}
+    >
+      <List style={{ maxHeight: "100%", overflowY: "scroll" }}>
         {renderTracks()}
       </List>
     </div>
