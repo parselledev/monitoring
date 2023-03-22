@@ -18,9 +18,8 @@ const fxGetTracks = createEffect().use(tracksApi.getTracks);
 export const tracksQuery = createQuery({
   effect: fxGetTracks,
   mapData: ({ result, params }: any) =>
-    result.map((track: any) => {
+    result.reverse().map((track: any) => {
       const signals = track.signals;
-      const firstSignal = signals[0];
       const lastSignal = signals[signals.length - 1];
 
       return {

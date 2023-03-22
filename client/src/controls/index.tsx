@@ -35,7 +35,10 @@ export const Controls = () => {
     data.map((track: any, index: number) => {
       const startDate = moment(track.start);
       const stopDate = moment(track.stop);
-      const duration = moment.duration(stopDate.diff(startDate)).minutes();
+
+      const dif = moment.duration(stopDate.diff(startDate));
+      const duration = [`${dif.hours()} ч`, `${dif.minutes()} мин`].join(" : ");
+      // console.log('dif in Mins: ', (dif.hours() * 60) + dif.minutes());
 
       return (
         <ListItemButton
@@ -56,7 +59,7 @@ export const Controls = () => {
           )}
 
           <span style={{ marginRight: 10 }}>
-            {moment.unix(track.start / 1000).format("DD.MM")}
+            {moment(track.start).format("DD.MM")}
           </span>
           <div
             style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}
@@ -65,7 +68,7 @@ export const Controls = () => {
             <Chip label={`${stopDate.format("HH:mm")}`} />
           </div>
 
-          <Chip label={`${duration} мин`} variant="outlined" />
+          <Chip label={duration} variant="outlined" />
         </ListItemButton>
       );
     });
