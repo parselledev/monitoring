@@ -6,6 +6,7 @@ module.exports = async () => {
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
     args: [
+      '--no-sandbox',
       '--aggressive-cache-discard',
       '--disable-cache',
       '--disable-application-cache',
