@@ -5,12 +5,8 @@ module.exports = async () => {
 
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
-    args: [
-      '--disable-setuid-sandbox',
-      '--no-sandbox',
-      '--disable-gpu',
-      '--no-first-run',
-    ],
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--use-gl=egl'],
   });
 
   const page = await browser.newPage();
