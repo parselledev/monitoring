@@ -13,7 +13,7 @@ const port = process.env.PORT || 3500;
 
 connectDB();
 
-app.use(logger);
+// app.use(logger);
 app.use(cors(corsConfigs));
 app.use(express.json());
 app.use('/', require('./routes/root'));
@@ -33,9 +33,9 @@ mongoose.connection.once('open', () => {
 });
 
 mongoose.connection.on('error', (err) => {
-  console.log(err);
-  logEvents(
-    `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}\t`,
-    'mongoDBErrLog.log'
-  );
+  // console.log(err);
+  // logEvents(
+  //   `${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}\t`,
+  //   'mongoDBErrLog.log'
+  // );
 });

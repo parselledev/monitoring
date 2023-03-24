@@ -69,7 +69,6 @@ module.exports = async () => {
           await signalModel.create({ ...deviceState, timestamp: Date.now() });
           await deviceStateModel.findOneAndUpdate(deviceState);
 
-          console.log('Сохранено в БД');
           prevDeviceState = deviceState;
         }
       } catch {}
