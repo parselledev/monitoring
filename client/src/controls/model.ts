@@ -27,6 +27,7 @@ export const tracksQuery = createQuery({
       signals.forEach((signal: any) => {
         if (
           signal.front_pass_door === "Open" ||
+          signal.rear_right_door === "Open" ||
           signal.hood === "Open" ||
           signal.trunk === "Open"
         ) {

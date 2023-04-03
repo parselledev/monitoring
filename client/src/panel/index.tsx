@@ -1,14 +1,14 @@
-import { Button, Pagination, Paper, Typography } from "@mui/material";
+import { Chip, List, ListItemButton, Paper, Typography } from "@mui/material";
 import React from "react";
-import { Car } from "../car";
 import { useUnit } from "effector-react";
 import {
   $currentSegment,
   $currentSegmentId,
   $currentTrack,
   setCurrentMark,
-  setCurrentSegmentId,
 } from "../controls/model";
+import moment from "moment/moment";
+import { Car } from "../car";
 
 export const Panel = () => {
   const [currentSegment, currentSegmentId, currentTrack] = useUnit([
@@ -26,16 +26,24 @@ export const Panel = () => {
       signal.rear_left_door === "open" ||
       signal.rear_right_door === "Open" ||
       signal.hood === "Open" ||
-      signal.trunk === "Open"
+      signal.trunk === "Open" ||
+      signal.guard === "SafeGuardOn"
   );
 
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentSegmentId(panelData[value - 1]._id);
+  const handleMarkClick = (segment: any) => {
+    setCurrentMark([segment.geo.lon, segment.geo.lat]);
   };
 
-  const handleMarkClick = () => {
-    setCurrentMark([currentSegment.geo.lon, currentSegment.geo.lat]);
-  };
+  const renderSegments = () =>
+    panelData.map((segment: any, index: number) => (
+      <ListItemButton
+        key={segment.timestamp}
+        onClick={() => handleMarkClick(segment)}
+      >
+        <Chip label={`${moment(segment.timestamp).format("HH:mm")}`} />
+        <Car segment={segment} />
+      </ListItemButton>
+    ));
 
   return (
     <Paper
@@ -53,24 +61,7 @@ export const Panel = () => {
         Ключевые моменты
       </Typography>
 
-      <Pagination
-        count={panelData.length}
-        page={
-          panelData.findIndex(
-            (signal: any) => signal._id === currentSegmentId
-          ) + 1
-        }
-        onChange={handleChange}
-      />
-
-      {currentSegment ? (
-        <>
-          <Car />
-          <Button variant="contained" onClick={handleMarkClick}>
-            Показать на карте
-          </Button>
-        </>
-      ) : null}
+      <List>{renderSegments()}</List>
     </Paper>
   );
 };

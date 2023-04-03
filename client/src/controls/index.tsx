@@ -52,7 +52,7 @@ export const Controls = () => {
           }}
         >
           {track.type === "parking" ? (
-            <LocalParkingIcon />
+            <LocalParkingIcon style={{ opacity: 0.3 }} />
           ) : (
             <DirectionsCarIcon />
           )}

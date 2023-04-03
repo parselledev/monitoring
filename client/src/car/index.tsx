@@ -1,26 +1,27 @@
 import { Paper } from "@mui/material";
 import carImg from "./img/car.png";
+import lockImg from "./img/icons-big.png";
 import driverDoorImg from "./img/door-front-left-opened.png";
 import frontPassDoorImg from "./img/door-front-right-opened.png";
 import rearLeftDoorImg from "./img/door-back-left-opened.png";
 import rearRightDoorImg from "./img/door-back-right-opened.png";
 import hoodImg from "./img/hood.png";
 import trunkImg from "./img/trunk.png";
-import { useUnit } from "effector-react";
-import { $currentSegment } from "../controls/model";
 
-export const Car = () => {
-  const [currentSegment] = useUnit([$currentSegment]);
+export const Car = ({ segment }: any) => {
+  if (!segment) return null;
 
   const {
+    guard,
     driver_door,
     front_pass_door,
     rear_left_door,
     rear_right_door,
     hood,
     trunk,
-  } = currentSegment;
+  } = segment;
 
+  const lockSrc = guard === "SafeGuardOn" ? lockImg : "";
   const driverDoorSrc = driver_door === "Open" ? driverDoorImg : "";
   const frontPassDoorSrc = front_pass_door === "Open" ? frontPassDoorImg : "";
   const rearLeftDoorSrc = rear_left_door === "Open" ? rearLeftDoorImg : "";
@@ -39,6 +40,19 @@ export const Car = () => {
         transform: "scale(0.8) translateX(-40px)",
       }}
     >
+      {lockSrc && (
+        <div
+          style={{
+            position: "absolute",
+            top: 73,
+            right: 105,
+            width: 40,
+            height: 45,
+            background: `url(${lockImg}) no-repeat 0 0`,
+          }}
+        />
+      )}
+
       {driverDoorSrc && (
         <img
           src={driverDoorSrc}
