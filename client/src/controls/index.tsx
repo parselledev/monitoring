@@ -33,11 +33,17 @@ export const Controls = () => {
 
   const renderTracks = () =>
     data.map((track: any, index: number) => {
+      const isFirstTrack = index === 0;
+      const isParking = track.type === "parking";
       const startDate = moment(track.start);
-      const stopDate = moment(track.stop);
+      const stopDate =
+        isParking && isFirstTrack ? moment() : moment(track.stop);
 
       const dif = moment.duration(stopDate.diff(startDate));
-      const duration = `${dif.hours()} ч : ${dif.minutes()} мин`;
+      const duration =
+        dif.hours() === 0
+          ? `${dif.minutes()} мин`
+          : `${dif.hours()} ч : ${dif.minutes()} мин`;
 
       return (
         <ListItemButton
@@ -51,7 +57,7 @@ export const Controls = () => {
             cursor: "pointer",
           }}
         >
-          {track.type === "parking" ? (
+          {isParking ? (
             <LocalParkingIcon style={{ opacity: 0.3 }} />
           ) : (
             <DirectionsCarIcon />
