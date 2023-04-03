@@ -39,9 +39,12 @@ export const Panel = () => {
       <ListItemButton
         key={segment.timestamp}
         onClick={() => handleMarkClick(segment)}
-        style={{ display: "grid", gridTemplateColumns: "auto auto", gap: 15 }}
+        style={{ position: "relative", padding: 0 }}
       >
-        <Chip label={`${moment(segment.timestamp).format("HH:mm")}`} />
+        <Chip
+          label={`${moment(segment.timestamp).format("HH:mm")}`}
+          style={{ position: "absolute", left: 12, zIndex: 10 }}
+        />
         <Car segment={segment} />
       </ListItemButton>
     ));
