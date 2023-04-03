@@ -34,20 +34,18 @@ export const Car = ({ segment }: any) => {
       elevation={0}
       style={{
         position: "relative",
-        width: 310,
-        height: 200,
-        background: `url(${carImg}) no-repeat 18px 40px`,
-        transform: "scale(0.8) translateX(-40px)",
       }}
     >
+      <img src={carImg} />
+
       {lockSrc && (
         <div
           style={{
             position: "absolute",
-            top: 73,
-            right: 105,
+            top: 37,
+            right: 85,
             width: 40,
-            height: 45,
+            height: 40,
             background: `url(${lockImg}) no-repeat 0 0`,
           }}
         />
@@ -58,9 +56,10 @@ export const Car = ({ segment }: any) => {
           src={driverDoorSrc}
           style={{
             position: "absolute",
-            top: 142,
-            right: 143,
-            height: 53,
+            top: 82,
+            right: 125,
+            height: 45,
+            transform: "rotate(-45deg)",
           }}
         />
       )}
@@ -69,9 +68,10 @@ export const Car = ({ segment }: any) => {
         src={frontPassDoorSrc}
         style={{
           position: "absolute",
-          top: 5,
-          right: 143,
-          height: 53,
+          top: -5,
+          right: 125,
+          height: 45,
+          transform: "rotate(45deg)",
         }}
       />
       {rearLeftDoorSrc && (
@@ -79,9 +79,10 @@ export const Car = ({ segment }: any) => {
           src={rearLeftDoorSrc}
           style={{
             position: "absolute",
-            top: 142,
-            right: 84,
-            height: 53,
+            top: 82,
+            right: 65,
+            height: 45,
+            transform: "rotate(-45deg)",
           }}
         />
       )}
@@ -91,9 +92,10 @@ export const Car = ({ segment }: any) => {
           src={rearRightDoorSrc}
           style={{
             position: "absolute",
-            top: 5,
-            right: 84,
-            height: 53,
+            top: -5,
+            right: 65,
+            height: 45,
+            transform: "rotate(45deg)",
           }}
         />
       )}
@@ -103,9 +105,8 @@ export const Car = ({ segment }: any) => {
           src={hoodSrc}
           style={{
             position: "absolute",
-            top: 56,
-            right: 210,
-            width: 72,
+            top: 16,
+            right: 190,
             height: 90,
           }}
         />
@@ -116,10 +117,9 @@ export const Car = ({ segment }: any) => {
           src={trunkSrc}
           style={{
             position: "absolute",
-            top: 64,
-            right: 23,
-            width: 28,
-            height: 74,
+            top: 20,
+            right: 2,
+            height: 80,
           }}
         />
       )}
