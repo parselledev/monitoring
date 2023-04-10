@@ -2,8 +2,7 @@ const signal = require('../models/signal');
 const deviceState = require('../models/deviceState');
 const { sign } = require('jsonwebtoken');
 
-const PARK_ON = 'On';
-const PARK_OFF = 'off';
+const ENGINE_OFF = 'EngineOffNoKey';
 
 const getTracks = async (req, res) => {
   const signalsData = await signal.find();
@@ -13,43 +12,42 @@ const getTracks = async (req, res) => {
   let currentType = null;
 
   signalsData.filter(
-    (signal) =>
-      !signal.geo?.lat || !signal.geo?.lon || !signal.gear_in_park_mode
+    (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition_switch
   );
 
   signalsData.forEach((signal, index) => {
     if (index === 0) {
       temp.push(signal);
-      currentType = signal.gear_in_park_mode;
+      currentType = signal.ignition_switch;
       return;
     }
 
     if (
-      currentType === signal.gear_in_park_mode &&
+      currentType === signal.ignition_switch &&
       index === signalsData.length - 1
     ) {
       temp.push(signal);
       result.push({
         id: temp[0]._id || 'asd',
-        type: currentType === PARK_ON ? 'parking' : 'moving',
+        type: currentType === ENGINE_OFF ? 'parking' : 'moving',
         start: temp[0].timestamp,
         stop: temp[temp.length - 1].timestamp,
         signals: temp,
       });
       temp = [];
-    } else if (currentType === signal.gear_in_park_mode) {
+    } else if (currentType === signal.ignition_switch) {
       temp.push(signal);
-    } else if (currentType !== signal.gear_in_park_mode) {
+    } else if (currentType !== signal.ignition_switch) {
       result.push({
         id: temp[0]._id || 'asd',
-        type: currentType === PARK_ON ? 'parking' : 'moving',
+        type: currentType === ENGINE_OFF ? 'parking' : 'moving',
         start: temp[0].timestamp,
         stop: temp[temp.length - 1].timestamp,
         signals: temp,
       });
       temp = [];
       temp.push(signal);
-      currentType = signal.gear_in_park_mode;
+      currentType = signal.ignition_switch;
     }
   });
 

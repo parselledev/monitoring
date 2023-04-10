@@ -1,11 +1,12 @@
-const WebSocket = require('ws');
+const puppeteer = require('puppeteer');
 const signalModel = require('../../models/signal');
 const deviceStateModel = require('../../models/deviceState');
-const auth = require('./auth');
-
-const AUTH_INTERVAL_TIME = 1000 * 60 * 5; // 5 мин.
 
 module.exports = async () => {
+  /** Подготовка стейта  */
+
+  const serviceUrl = process.env.SERVICE_IRL;
+
   let deviceStateRemote = await deviceStateModel.findOne().lean();
 
   if (!deviceStateRemote) {
@@ -13,21 +14,13 @@ module.exports = async () => {
       createdAt: null,
       geo: { lat: 0, lon: 0 },
       guard: 'SafeGuardOn',
-      central_lock: null,
-      parking_brake: null,
-      engine_block: null,
-      immobilizer: null,
       ignition_switch: null,
-      gear_in_park_mode: null,
-      speed: null,
-      rpm: null,
       driver_door: null,
       front_pass_door: null,
       rear_left_door: null,
       rear_right_door: null,
       trunk: null,
       hood: null,
-      service_state_ext_update_time: null,
     };
     await deviceStateModel.create(createdRemote);
 
@@ -41,46 +34,125 @@ module.exports = async () => {
   let deviceState = deviceStateRemote;
   let prevDeviceState = deviceStateRemote;
 
-  const watcher = async () => {
-    const dozor = await auth();
+  /** Создание браузера */
 
-    const connectionToken = encodeURIComponent(
-      dozor._dozor._garage._signal._connection_token
+  const browser = await puppeteer.launch({
+    // executablePath: '/usr/bin/chromium-browser',
+    headless: true,
+    // args: [
+    //   '--no-sandbox',
+    //   '--aggressive-cache-discard',
+    //   '--disable-cache',
+    //   '--disable-application-cache',
+    //   '--disable-offline-load-stale-cache',
+    //   '--disable-gpu-shader-disk-cache',
+    //   '--media-cache-size=0',
+    //   '--disk-cache-size=0',
+    //   '--disable-extensions',
+    //   '--disable-component-extensions-with-background-pages',
+    //   '--disable-default-apps',
+    //   '--mute-audio',
+    //   '--no-default-browser-check',
+    //   '--autoplay-policy=user-gesture-required',
+    //   '--disable-background-timer-throttling',
+    //   '--disable-backgrounding-occluded-windows',
+    //   '--disable-notifications',
+    //   '--disable-background-networking',
+    //   '--disable-breakpad',
+    //   '--disable-component-update',
+    //   '--disable-domain-reliability',
+    //   '--disable-sync',
+    // ],
+  });
+
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1366, height: 768 });
+
+  /** Авторизация */
+  while (true) {
+    try {
+      await page.goto(serviceUrl, { waitUntil: 'networkidle2' });
+      await page.waitForSelector('#tecel-passport');
+
+      await page.type("input[type='text']", process.env.DOZOR_LOGIN);
+      await page.$eval('.btn-primary', async (elem) => await elem.click());
+
+      await page.waitForSelector("input[type='password']", { visible: true });
+      await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
+
+      await page.$eval('.btn-primary', async (elem) => await elem.click());
+
+      // await page.waitForSelector('.geomap-marker__arrow');
+
+      break;
+    } catch (e) {
+      await page.reload(serviceUrl);
+
+      continue;
+    }
+  }
+
+  /** Инъекция скрипта */
+  await page.addScriptTag({
+    content: `setInterval(() => {
+      const device = window.dozor._dozor._garage._devices.get(61739)
+      const state = device._device_info.state
+      const states = device._states
+      
+      console.log('DOZOR', {
+        geo: {
+          lat: state.geo.lat,
+          lon: state.geo.lon
+        },
+        guard: state.guard,
+        ignition_switch: state.ignition_switch,
+        driver_door: states.door_fl,
+        front_pass_door: states.door_fr,
+        rear_left_door: states.door_rl,
+        rear_right_door: states.door_rr,
+        trunk: states.trunk,
+        hood: states.hood,
+      });
+    }, 3000);`,
+  });
+
+  /** Отслеживание консоли */
+  await page.on('console', async (msg) => {
+    const args = msg.args();
+    const vals = [];
+
+    if (msg.text().includes('DOZOR')) {
+      for (let i = 0; i < args.length; i++) {
+        vals.push(await args[i].jsonValue());
+      }
+
+      const signal = vals.map((v) =>
+        typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
+      )[1];
+
+      const mergedSignal = {};
+
+      for (const [key, value] of Object.entries(deviceState)) {
+        mergedSignal[key] = signal[key] || value;
+      }
+
+      deviceState = { ...mergedSignal };
+
+      if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
+        await signalModel.create({ ...deviceState, timestamp: Date.now() });
+        await deviceStateModel.findOneAndUpdate(deviceState);
+
+        prevDeviceState = deviceState;
+      }
+    }
+  });
+
+  /** Ожидание кнопки для выхода из сна */
+  setInterval(async () => {
+    await page.waitForSelector('.forms__button_warning', { visible: true });
+    await page.$eval(
+      '.forms__button_warning',
+      async (elem) => await elem.click()
     );
-    const sessionId = encodeURIComponent(dozor._dozor._garage._session_id);
-    const url = `wss://monitoring.tecel.ru/url_signal_r/connect?transport=webSockets&clientProtocol=1.5&connectionToken=${connectionToken}&connectionData=%5B%7B%22name%22%3A%22ControlService%22%7D%5D&tid=0&Lang=ru&SessionGuid=${sessionId}&ClientData=%7B%22AppName%22%3A%22Prizrak+WEB+Monitoring%22%2C%22AppVersion%22%3A%221.0.65%22%2C%22AppHost%22%3A%22monitoring.tecel.ru%22%2C%22IsUserDataAvailable%22%3Atrue%2C%22AdditionalInfo%22%3A%7B%7D%7D`;
-    const ws = await new WebSocket(url.trim());
-
-    ws.on('message', async (data) => {
-      try {
-        const signal = JSON.parse(
-          JSON.parse(data.toString())?.M[0]?.A[0]
-        ).device_state;
-
-        const mergedSignal = {};
-
-        for (const [key, value] of Object.entries(deviceState)) {
-          mergedSignal[key] = signal[key] || value;
-        }
-
-        deviceState = { ...mergedSignal };
-
-        if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-          await signalModel.create({ ...deviceState, timestamp: Date.now() });
-          await deviceStateModel.findOneAndUpdate(deviceState);
-
-          prevDeviceState = deviceState;
-        }
-      } catch {}
-    });
-
-    /** Разрыв связи с сокетом по истечении интервала */
-    setTimeout(() => {
-      ws.terminate();
-    }, AUTH_INTERVAL_TIME);
-  };
-
-  watcher();
-
-  const authInterval = setInterval(watcher, AUTH_INTERVAL_TIME);
+  }, 1000 * 60 * 2);
 };
