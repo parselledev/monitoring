@@ -16,6 +16,19 @@ const getTracks = async (req, res) => {
   );
 
   signalsData.forEach((signal, index) => {
+    if (index === 0 && signalsData.length === 1) {
+      temp.push(signal);
+      result.push({
+        id: temp[0]._id || 'asd',
+        type: currentType === ENGINE_OFF ? 'parking' : 'moving',
+        start: temp[0].timestamp,
+        stop: temp[0].timestamp,
+        signals: temp,
+      });
+      temp = [];
+      return;
+    }
+
     if (index === 0) {
       temp.push(signal);
       currentType = signal.ignition;
