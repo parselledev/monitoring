@@ -8,7 +8,7 @@ import {
 } from "effector";
 import { tracksApi } from "./api";
 import { createGate } from "effector-react";
-import { reset } from "patronum";
+import { debug, reset } from "patronum";
 
 export const ControlsGate = createGate();
 export const { open: controlsMounted, close: controlsUnmounted } = ControlsGate;
@@ -26,10 +26,10 @@ export const tracksQuery = createQuery({
 
       signals.forEach((signal: any) => {
         if (
-          signal.front_pass_door === "Open" ||
-          signal.rear_right_door === "Open" ||
-          signal.hood === "Open" ||
-          signal.trunk === "Open"
+          signal.front_pass_door === "true" ||
+          signal.rear_right_door === "true" ||
+          signal.hood === "true" ||
+          signal.trunk === "true"
         ) {
           alert = true;
         }
@@ -55,6 +55,8 @@ export const tracksQuery = createQuery({
       };
     }),
 });
+
+debug(tracksQuery.$data);
 
 export const $currentTrackId = createStore<number | null>(null);
 export const $currentTrack = combine(

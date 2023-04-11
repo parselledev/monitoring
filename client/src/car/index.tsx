@@ -22,12 +22,12 @@ export const Car = ({ segment }: any) => {
   } = segment;
 
   const lockSrc = guard === "SafeGuardOn" ? lockImg : "";
-  const driverDoorSrc = driver_door === "Open" ? driverDoorImg : "";
-  const frontPassDoorSrc = front_pass_door === "Open" ? frontPassDoorImg : "";
-  const rearLeftDoorSrc = rear_left_door === "Open" ? rearLeftDoorImg : "";
-  const rearRightDoorSrc = rear_right_door === "Open" ? rearRightDoorImg : "";
-  const hoodSrc = hood === "Open" ? hoodImg : "";
-  const trunkSrc = trunk === "Open" ? trunkImg : "";
+  const driverDoorSrc = driver_door === "true" ? driverDoorImg : "";
+  const frontPassDoorSrc = front_pass_door === "true" ? frontPassDoorImg : "";
+  const rearLeftDoorSrc = rear_left_door === "true" ? rearLeftDoorImg : "";
+  const rearRightDoorSrc = rear_right_door === "true" ? rearRightDoorImg : "";
+  const hoodSrc = hood === "true" ? hoodImg : "";
+  const trunkSrc = trunk === "true" ? trunkImg : "";
 
   return (
     <Paper
@@ -38,18 +38,18 @@ export const Car = ({ segment }: any) => {
     >
       <img src={carImg} />
 
-      {lockSrc && (
-        <div
-          style={{
-            position: "absolute",
-            top: 37,
-            right: 85,
-            width: 40,
-            height: 40,
-            background: `url(${lockImg}) no-repeat 0 0`,
-          }}
-        />
-      )}
+      {/*{lockSrc && (*/}
+      {/*  <div*/}
+      {/*    style={{*/}
+      {/*      position: "absolute",*/}
+      {/*      top: 37,*/}
+      {/*      right: 85,*/}
+      {/*      width: 40,*/}
+      {/*      height: 40,*/}
+      {/*      background: `url(${lockImg}) no-repeat 0 0`,*/}
+      {/*    }}*/}
+      {/*  />*/}
+      {/*)}*/}
 
       {driverDoorSrc && (
         <img

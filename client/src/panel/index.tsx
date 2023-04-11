@@ -21,13 +21,12 @@ export const Panel = () => {
 
   const panelData = currentTrack.signals.filter(
     (signal: any) =>
-      signal.driver_door === "Open" ||
-      signal.front_pass_door === "Open" ||
-      signal.rear_left_door === "open" ||
-      signal.rear_right_door === "Open" ||
-      signal.hood === "Open" ||
-      signal.trunk === "Open" ||
-      signal.guard === "SafeGuardOn"
+      signal.driver_door === "true" ||
+      signal.front_pass_door === "true" ||
+      signal.rear_left_door === "true" ||
+      signal.rear_right_door === "true" ||
+      signal.hood === "true" ||
+      signal.trunk === "true"
   );
 
   const handleMarkClick = (segment: any) => {
