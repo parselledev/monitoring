@@ -139,8 +139,12 @@ module.exports = async () => {
 
       deviceState = { ...signal };
 
-      await signalModel.create({ ...deviceState, timestamp: Date.now() });
-      await deviceStateModel.findOneAndUpdate(deviceState);
+      if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
+        await signalModel.create({ ...deviceState, timestamp: Date.now() });
+        await deviceStateModel.findOneAndUpdate(deviceState);
+
+        prevDeviceState = deviceState;
+      }
     }
   });
 
