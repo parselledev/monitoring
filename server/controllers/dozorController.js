@@ -2,7 +2,7 @@ const signal = require('../models/signal');
 const deviceState = require('../models/deviceState');
 const { sign } = require('jsonwebtoken');
 
-const ENGINE_OFF = 'EngineOffNoKey';
+const ENGINE_OFF = false;
 
 const getTracks = async (req, res) => {
   const signalsData = await signal.find();
@@ -12,20 +12,17 @@ const getTracks = async (req, res) => {
   let currentType = null;
 
   signalsData.filter(
-    (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition_switch
+    (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
   );
 
   signalsData.forEach((signal, index) => {
     if (index === 0) {
       temp.push(signal);
-      currentType = signal.ignition_switch;
+      currentType = signal.ignition;
       return;
     }
 
-    if (
-      currentType === signal.ignition_switch &&
-      index === signalsData.length - 1
-    ) {
+    if (currentType === signal.ignition && index === signalsData.length - 1) {
       temp.push(signal);
       result.push({
         id: temp[0]._id || 'asd',
@@ -35,9 +32,9 @@ const getTracks = async (req, res) => {
         signals: temp,
       });
       temp = [];
-    } else if (currentType === signal.ignition_switch) {
+    } else if (currentType === signal.ignition) {
       temp.push(signal);
-    } else if (currentType !== signal.ignition_switch) {
+    } else if (currentType !== signal.ignition) {
       result.push({
         id: temp[0]._id || 'asd',
         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
@@ -47,7 +44,7 @@ const getTracks = async (req, res) => {
       });
       temp = [];
       temp.push(signal);
-      currentType = signal.ignition_switch;
+      currentType = signal.ignition;
     }
   });
 

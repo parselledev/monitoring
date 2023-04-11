@@ -8,7 +8,7 @@ const signalSchema = new mongoose.Schema(
       lon: Number,
     },
     guard: String,
-    ignition_switch: String,
+    ignition: Boolean,
     driver_door: String,
     front_pass_door: String,
     rear_left_door: String,

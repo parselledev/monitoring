@@ -14,7 +14,7 @@ module.exports = async () => {
       createdAt: null,
       geo: { lat: 0, lon: 0 },
       guard: 'SafeGuardOn',
-      ignition_switch: null,
+      ignition: null,
       driver_door: null,
       front_pass_door: null,
       rear_left_door: null,
@@ -104,7 +104,7 @@ module.exports = async () => {
           lon: state.geo.lon
         },
         guard: state.guard,
-        ignition_switch: state.ignition_switch,
+        ignition: states.ignition,
         driver_door: states.door_fl,
         front_pass_door: states.door_fr,
         rear_left_door: states.door_rl,
@@ -137,12 +137,8 @@ module.exports = async () => {
 
       deviceState = { ...mergedSignal };
 
-      if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-        await signalModel.create({ ...deviceState, timestamp: Date.now() });
-        await deviceStateModel.findOneAndUpdate(deviceState);
-
-        prevDeviceState = deviceState;
-      }
+      await signalModel.create({ ...deviceState, timestamp: Date.now() });
+      await deviceStateModel.findOneAndUpdate(deviceState);
     }
   });
 
