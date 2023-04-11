@@ -94,15 +94,14 @@ module.exports = async () => {
   /** Инъекция скрипта */
   await page.addScriptTag({
     content: `setInterval(() => {
-      const device = window.dozor._dozor._garage._devices.get(61739)
+      const dozor = window.dozor
+      const device = dozor._dozor._garage._devices.get(61739)
       const state = device._device_info.state
       const states = device._states
+      const geo = dozor._control._map._map.markers.get(61739).value._geo.coords
       
       console.log('DOZOR', {
-        geo: {
-          lat: state.geo.lat,
-          lon: state.geo.lon
-        },
+        geo: geo,
         guard: state.guard,
         ignition: states.ignition,
         driver_door: states.door_fl,
@@ -129,13 +128,15 @@ module.exports = async () => {
         typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
       )[1];
 
-      const mergedSignal = {};
+      // const mergedSignal = {};
+      //
+      // for (const [key, value] of Object.entries(deviceState)) {
+      //   mergedSignal[key] = signal[key] || value;
+      // }
+      //
+      // deviceState = { ...mergedSignal };
 
-      for (const [key, value] of Object.entries(deviceState)) {
-        mergedSignal[key] = signal[key] || value;
-      }
-
-      deviceState = { ...mergedSignal };
+      deviceState = { ...signal };
 
       await signalModel.create({ ...deviceState, timestamp: Date.now() });
       await deviceStateModel.findOneAndUpdate(deviceState);
