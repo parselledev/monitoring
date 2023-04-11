@@ -14,13 +14,13 @@ module.exports = async () => {
       createdAt: null,
       geo: { lat: 0, lon: 0 },
       guard: 'SafeGuardOn',
-      ignition: null,
-      driver_door: null,
-      front_pass_door: null,
-      rear_left_door: null,
-      rear_right_door: null,
-      trunk: null,
-      hood: null,
+      ignition: false,
+      driver_door: false,
+      front_pass_door: false,
+      rear_left_door: false,
+      rear_right_door: false,
+      trunk: false,
+      hood: false,
     };
     await deviceStateModel.create(createdRemote);
 
