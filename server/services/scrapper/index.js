@@ -38,29 +38,30 @@ module.exports = async () => {
 
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
+    headless: false,
     args: [
       '--no-sandbox',
-      '--aggressive-cache-discard',
-      '--disable-cache',
-      '--disable-application-cache',
-      '--disable-offline-load-stale-cache',
-      '--disable-gpu-shader-disk-cache',
-      '--media-cache-size=0',
-      '--disk-cache-size=0',
-      '--disable-extensions',
-      '--disable-component-extensions-with-background-pages',
-      '--disable-default-apps',
-      '--mute-audio',
-      '--no-default-browser-check',
-      '--autoplay-policy=user-gesture-required',
-      '--disable-background-timer-throttling',
-      '--disable-backgrounding-occluded-windows',
-      '--disable-notifications',
-      '--disable-background-networking',
-      '--disable-breakpad',
-      '--disable-component-update',
-      '--disable-domain-reliability',
-      '--disable-sync',
+      // '--aggressive-cache-discard',
+      // '--disable-cache',
+      // '--disable-application-cache',
+      // '--disable-offline-load-stale-cache',
+      // '--disable-gpu-shader-disk-cache',
+      // '--media-cache-size=0',
+      // '--disk-cache-size=0',
+      // '--disable-extensions',
+      // '--disable-component-extensions-with-background-pages',
+      // '--disable-default-apps',
+      // '--mute-audio',
+      // '--no-default-browser-check',
+      // '--autoplay-policy=user-gesture-required',
+      // '--disable-background-timer-throttling',
+      // '--disable-backgrounding-occluded-windows',
+      // '--disable-notifications',
+      // '--disable-background-networking',
+      // '--disable-breakpad',
+      // '--disable-component-update',
+      // '--disable-domain-reliability',
+      // '--disable-sync',
     ],
   });
 
@@ -91,14 +92,15 @@ module.exports = async () => {
     }
   }
 
+  // Example co
+
   /** Инъекция скрипта */
   await page.addScriptTag({
     content: `setInterval(() => {
-      const dozor = window.dozor
-      const device = dozor._dozor._garage._devices.get(61739)
-      const state = device._device_info.state
-      const states = device._states
-      const geo = dozor._control._map._map.markers.get(61739).value._geo.coords
+      const device = window.dozor._dozor._garage._devices.get(61739);
+      const state = device._device_info.state;
+      const states = device._states;
+      const geo = device._map._markers.get(61739)._geo.coords;
       
       console.log('DOZOR', {
         geo: geo,
