@@ -137,13 +137,15 @@ module.exports = async () => {
       //
       // deviceState = { ...mergedSignal };
 
-      deviceState = { ...signal };
+      if (signal.ignition !== null) {
+        deviceState = { ...signal };
 
-      if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-        await signalModel.create({ ...deviceState, timestamp: Date.now() });
-        await deviceStateModel.findOneAndUpdate(deviceState);
+        if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
+          await signalModel.create({ ...deviceState, timestamp: Date.now() });
+          await deviceStateModel.findOneAndUpdate(deviceState);
 
-        prevDeviceState = deviceState;
+          prevDeviceState = deviceState;
+        }
       }
     }
   });
