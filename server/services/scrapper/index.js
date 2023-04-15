@@ -7,6 +7,27 @@ module.exports = async () => {
 
   const serviceUrl = process.env.SERVICE_IRL;
 
+  const injectionScript = `
+  setInterval(() => {
+      const device = window.dozor._dozor._garage._devices.get(61739);
+      const state = device._device_info.state;
+      const states = device._states;
+      const geo = device._map._markers.get(61739)._geo.coords;
+      
+      console.log('DOZOR', {
+        geo: geo,
+        guard: state.guard,
+        ignition: states.ignition,
+        driver_door: states.door_fl,
+        front_pass_door: states.door_fr,
+        rear_left_door: states.door_rl,
+        rear_right_door: states.door_rr,
+        trunk: states.trunk,
+        hood: states.hood,
+      });
+    }, 3000);
+  `;
+
   let deviceStateRemote = await deviceStateModel.findOne().lean();
 
   if (!deviceStateRemote) {
@@ -38,30 +59,7 @@ module.exports = async () => {
 
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
-    args: [
-      '--no-sandbox',
-      // '--aggressive-cache-discard',
-      // '--disable-cache',
-      // '--disable-application-cache',
-      // '--disable-offline-load-stale-cache',
-      // '--disable-gpu-shader-disk-cache',
-      // '--media-cache-size=0',
-      // '--disk-cache-size=0',
-      // '--disable-extensions',
-      // '--disable-component-extensions-with-background-pages',
-      // '--disable-default-apps',
-      // '--mute-audio',
-      // '--no-default-browser-check',
-      // '--autoplay-policy=user-gesture-required',
-      // '--disable-background-timer-throttling',
-      // '--disable-backgrounding-occluded-windows',
-      // '--disable-notifications',
-      // '--disable-background-networking',
-      // '--disable-breakpad',
-      // '--disable-component-update',
-      // '--disable-domain-reliability',
-      // '--disable-sync',
-    ],
+    args: ['--no-sandbox'],
   });
 
   const page = await browser.newPage();
@@ -91,29 +89,30 @@ module.exports = async () => {
     }
   }
 
-  // Example co
-
   /** Инъекция скрипта */
   await page.addScriptTag({
-    content: `setInterval(() => {
-      const device = window.dozor._dozor._garage._devices.get(61739);
-      const state = device._device_info.state;
-      const states = device._states;
-      const geo = device._map._markers.get(61739)._geo.coords;
-      
-      console.log('DOZOR', {
-        geo: geo,
-        guard: state.guard,
-        ignition: states.ignition,
-        driver_door: states.door_fl,
-        front_pass_door: states.door_fr,
-        rear_left_door: states.door_rl,
-        rear_right_door: states.door_rr,
-        trunk: states.trunk,
-        hood: states.hood,
-      });
-    }, 3000);`,
+    content: injectionScript,
   });
+
+  /** Интервальная перезагрузка страницы */
+  setInterval(async () => {
+    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+    await page.addScriptTag({
+      content: injectionScript,
+    });
+  }, 1000 * 60 * 30); // 30 мин
+
+  /** Ожидание кнопки для выхода из сна */
+  setInterval(async () => {
+    await page.waitForSelector('.forms__button_warning', {
+      visible: true,
+      timeout: 0,
+    });
+    await page.$eval(
+      '.forms__button_warning',
+      async (elem) => await elem.click()
+    );
+  }, 1000 * 60 * 2); // 2 мин
 
   /** Отслеживание консоли */
   await page.on('console', async (msg) => {
@@ -129,14 +128,6 @@ module.exports = async () => {
         typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
       )[1];
 
-      // const mergedSignal = {};
-      //
-      // for (const [key, value] of Object.entries(deviceState)) {
-      //   mergedSignal[key] = signal[key] || value;
-      // }
-      //
-      // deviceState = { ...mergedSignal };
-
       if (signal.ignition !== null) {
         deviceState = { ...signal };
 
@@ -149,21 +140,4 @@ module.exports = async () => {
       }
     }
   });
-
-  /** Ожидание кнопки для выхода из сна */
-  setInterval(async () => {
-    await page.waitForSelector('.forms__button_warning', {
-      visible: true,
-      timeout: 0,
-    });
-    await page.$eval(
-      '.forms__button_warning',
-      async (elem) => await elem.click()
-    );
-  }, 1000 * 60 * 2); // 2 мин
-
-  /** Интервальная перезагрузка страницы */
-  setInterval(async () => {
-    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
-  }, 1000 * 60 * 30); // 30 мин
 };
