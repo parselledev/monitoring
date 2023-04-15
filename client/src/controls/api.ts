@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:3500";
+const baseURL = "http://194.58.121.20:3500";
 // const baseURL = "http://localhost:3500";
 
 const getTracks = () =>
