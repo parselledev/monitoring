@@ -101,18 +101,6 @@ module.exports = async () => {
       content: injectionScript,
     });
 
-    /** Ожидание кнопки для выхода из сна */
-    setInterval(async () => {
-      await page.waitForSelector('.forms__button_warning', {
-        visible: true,
-        timeout: 0,
-      });
-      await page.$eval(
-        '.forms__button_warning',
-        async (elem) => await elem.click()
-      );
-    }, 1000 * 60); // 1 мин
-
     /** Отслеживание консоли */
     await page.on('console', async (msg) => {
       const args = msg.args();
@@ -139,6 +127,18 @@ module.exports = async () => {
         }
       }
     });
+
+    /** Ожидание кнопки для выхода из сна */
+    setInterval(async () => {
+      await page.waitForSelector('.forms__button_warning', {
+        visible: true,
+        timeout: 0,
+      });
+      await page.$eval(
+        '.forms__button_warning',
+        async (elem) => await elem.click()
+      );
+    }, 1000 * 60); // 1 мин
   };
 
   await pagelogic();
