@@ -15,8 +15,9 @@ module.exports = async () => {
       const geo = device._map._markers.get(61739)._geo.coords;
       
       console.log('DOZOR', {
+        connected: states.connected
         geo: geo,
-        guard: state.guard,
+        guard: states.guard,
         ignition: states.ignition,
         driver_door: states.door_fl,
         front_pass_door: states.door_fr,
@@ -89,55 +90,53 @@ module.exports = async () => {
     }
   }
 
-  /** Инъекция скрипта */
-  await page.addScriptTag({
-    content: injectionScript,
-  });
+  /** --------- Интервальная перезагрузка страницы ------------- */
 
-  /** Интервальная перезагрузка страницы */
   setInterval(async () => {
     await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+
+    /** Инъекция скрипта */
     await page.addScriptTag({
       content: injectionScript,
     });
-  }, 1000 * 60 * 30); // 30 мин
 
-  /** Ожидание кнопки для выхода из сна */
-  setInterval(async () => {
-    await page.waitForSelector('.forms__button_warning', {
-      visible: true,
-      timeout: 0,
-    });
-    await page.$eval(
-      '.forms__button_warning',
-      async (elem) => await elem.click()
-    );
-  }, 1000 * 60 * 2); // 2 мин
+    /** Ожидание кнопки для выхода из сна */
+    setInterval(async () => {
+      await page.waitForSelector('.forms__button_warning', {
+        visible: true,
+        timeout: 0,
+      });
+      await page.$eval(
+        '.forms__button_warning',
+        async (elem) => await elem.click()
+      );
+    }, 1000 * 60); // 1 мин
 
-  /** Отслеживание консоли */
-  await page.on('console', async (msg) => {
-    const args = msg.args();
-    const vals = [];
+    /** Отслеживание консоли */
+    await page.on('console', async (msg) => {
+      const args = msg.args();
+      const vals = [];
 
-    if (msg.text().includes('DOZOR')) {
-      for (let i = 0; i < args.length; i++) {
-        vals.push(await args[i].jsonValue());
-      }
+      if (msg.text().includes('DOZOR')) {
+        for (let i = 0; i < args.length; i++) {
+          vals.push(await args[i].jsonValue());
+        }
 
-      const signal = vals.map((v) =>
-        typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
-      )[1];
+        const signal = vals.map((v) =>
+          typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
+        )[1];
 
-      if (signal.ignition !== null) {
-        deviceState = { ...signal };
+        if (signal.ignition !== null) {
+          deviceState = { ...signal };
 
-        if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-          await signalModel.create({ ...deviceState, timestamp: Date.now() });
-          await deviceStateModel.findOneAndUpdate(deviceState);
+          if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
+            await signalModel.create({ ...deviceState, timestamp: Date.now() });
+            await deviceStateModel.findOneAndUpdate(deviceState);
 
-          prevDeviceState = deviceState;
+            prevDeviceState = deviceState;
+          }
         }
       }
-    }
-  });
+    });
+  }, 1000 * 60 * 30); // 30 мин
 };

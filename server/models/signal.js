@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const signalSchema = new mongoose.Schema(
   {
     timestamp: Number,
+    connected: Boolean,
     geo: {
       lat: Number,
       lon: Number,

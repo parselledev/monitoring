@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const deviceStateSchema = new mongoose.Schema(
   {
+    connected: Boolean,
     geo: {
       lat: Number,
       lon: Number,
