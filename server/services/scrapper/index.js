@@ -1,11 +1,14 @@
 const puppeteer = require('puppeteer');
 const signalModel = require('../../models/signal');
 const deviceStateModel = require('../../models/deviceState');
+const { tr } = require('date-fns/locale');
 
 module.exports = async () => {
   /** Подготовка стейта  */
 
   const serviceUrl = process.env.SERVICE_IRL;
+
+  // debug window.dozor._dozor._garage._devices.get(61739)._map._markers.get(61739)
 
   const injectionScript = `
   setInterval(() => {
@@ -15,7 +18,7 @@ module.exports = async () => {
       const geo = device._map._markers.get(61739)._geo.coords;
       
       console.log('DOZOR', {
-        connected: states.connected
+        connected: states?.connected,
         geo: geo,
         guard: states.guard,
         ignition: states.ignition,
@@ -60,8 +63,9 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
+    // executablePath: '/usr/bin/chromium-browser',
+    // args: ['--no-sandbox'],
+    headless: false,
   });
 
   const page = await browser.newPage();
@@ -82,6 +86,8 @@ module.exports = async () => {
       await page.$eval('.btn-primary', async (elem) => await elem.click());
 
       // await page.waitForSelector('.geomap-marker__arrow');
+
+      await page.waitForSelector('.device__image');
 
       break;
     } catch (e) {
