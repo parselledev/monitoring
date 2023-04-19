@@ -91,9 +91,9 @@ module.exports = async () => {
     }
   }
 
-  /** --------- Интервальная перезагрузка страницы ------------- */
+  /** --------- Логика страницы и интервальная перезагрузка ------------- */
 
-  setInterval(async () => {
+  const pagelogic = async () => {
     await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
 
     /** Инъекция скрипта */
@@ -139,5 +139,11 @@ module.exports = async () => {
         }
       }
     });
+  };
+
+  await pagelogic();
+
+  setInterval(async () => {
+    await pagelogic();
   }, 1000 * 60 * 30); // 30 мин
 };
