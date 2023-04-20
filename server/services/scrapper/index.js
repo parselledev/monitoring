@@ -18,7 +18,6 @@ module.exports = async () => {
       const geo = device._map._markers.get(61739)._geo.coords;
       
       console.log('DOZOR', {
-        connected: states?.connected,
         geo: geo,
         guard: states.guard,
         ignition: states.ignition,
@@ -37,7 +36,6 @@ module.exports = async () => {
   if (!deviceStateRemote) {
     const createdRemote = {
       createdAt: null,
-      connected: false,
       geo: { lat: 0, lon: 0 },
       guard: true,
       ignition: false,
@@ -135,10 +133,10 @@ module.exports = async () => {
 
     /** Ожидание кнопки для выхода из сна */
     setInterval(async () => {
-      await page.waitForSelector('.forms__button_warning', {
-        visible: true,
-        timeout: 0,
-      });
+      // await page.waitForSelector('.forms__button_warning', {
+      //   visible: true,
+      //   timeout: 0,
+      // });
       await page.$eval(
         '.forms__button_warning',
         async (elem) => await elem.click()
