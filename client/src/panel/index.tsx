@@ -26,7 +26,8 @@ export const Panel = () => {
       signal.rear_left_door === "true" ||
       signal.rear_right_door === "true" ||
       signal.hood === "true" ||
-      signal.trunk === "true"
+      signal.trunk === "true" ||
+      signal.guard === true
   );
 
   const handleMarkClick = (segment: any) => {

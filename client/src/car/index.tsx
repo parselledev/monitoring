@@ -21,7 +21,7 @@ export const Car = ({ segment }: any) => {
     trunk,
   } = segment;
 
-  const lockSrc = guard === "SafeGuardOn" ? lockImg : "";
+  const lockSrc = guard === true ? lockImg : "";
   const driverDoorSrc = driver_door === "true" ? driverDoorImg : "";
   const frontPassDoorSrc = front_pass_door === "true" ? frontPassDoorImg : "";
   const rearLeftDoorSrc = rear_left_door === "true" ? rearLeftDoorImg : "";
@@ -38,18 +38,18 @@ export const Car = ({ segment }: any) => {
     >
       <img src={carImg} />
 
-      {/*{lockSrc && (*/}
-      {/*  <div*/}
-      {/*    style={{*/}
-      {/*      position: "absolute",*/}
-      {/*      top: 37,*/}
-      {/*      right: 85,*/}
-      {/*      width: 40,*/}
-      {/*      height: 40,*/}
-      {/*      background: `url(${lockImg}) no-repeat 0 0`,*/}
-      {/*    }}*/}
-      {/*  />*/}
-      {/*)}*/}
+      {lockSrc && (
+        <div
+          style={{
+            position: "absolute",
+            top: 37,
+            right: 85,
+            width: 40,
+            height: 40,
+            background: `url(${lockImg}) no-repeat 0 0`,
+          }}
+        />
+      )}
 
       {driverDoorSrc && (
         <img
