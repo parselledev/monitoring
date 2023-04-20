@@ -133,15 +133,15 @@ module.exports = async () => {
 
     /** Ожидание кнопки для выхода из сна */
     setInterval(async () => {
-      // await page.waitForSelector('.forms__button_warning', {
-      //   visible: true,
-      //   timeout: 0,
-      // });
+      await page.waitForSelector('.forms__button_warning', {
+        visible: true,
+        timeout: 0,
+      });
       await page.$eval(
         '.forms__button_warning',
         async (elem) => await elem.click()
       );
-    }, 1000 * 60); // 1 мин
+    }, 1000 * 60 * 2); // 2 мин
   };
 
   await pagelogic();
