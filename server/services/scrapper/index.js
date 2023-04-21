@@ -137,7 +137,7 @@ module.exports = async () => {
       try {
         await page.waitForSelector('.forms__button_warning', {
           visible: true,
-          timeout: { timeout: 1000 * 60 * 2 },
+          timeout: 1000 * 60 * 2, // 2 мин
         });
         await page.$eval(
           '.forms__button_warning',
