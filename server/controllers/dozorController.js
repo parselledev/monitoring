@@ -73,10 +73,10 @@ const getTracks = async (req, res) => {
       ? result
       : [
           {
-            id: temp[0]._id,
-            start: temp[0].createdAt,
-            stop: temp[temp.length - 1].createdAt,
-            signals: temp,
+            id: temp[0]?._id || null,
+            start: temp[0]?.createdAt || null,
+            stop: temp[temp.length - 1]?.createdAt || null,
+            signals: temp || null,
           },
         ]
   );
