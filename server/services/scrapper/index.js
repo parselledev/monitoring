@@ -132,8 +132,9 @@ module.exports = async () => {
     });
 
     /** Ожидание кнопки для выхода из сна */
-    try {
-      setInterval(async () => {
+
+    setInterval(async () => {
+      try {
         await page.waitForSelector('.forms__button_warning', {
           visible: true,
           timeout: { timeout: 1000 * 60 * 2 },
@@ -142,10 +143,10 @@ module.exports = async () => {
           '.forms__button_warning',
           async (elem) => await elem.click()
         );
-      }, 1000 * 60 * 2); // 2 мин
-    } catch (e) {
-      console.log('interval error');
-    }
+      } catch (e) {
+        console.log('interval error');
+      }
+    }, 1000 * 60 * 2); // 2 мин
   };
 
   await pagelogic();
