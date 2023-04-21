@@ -108,26 +108,28 @@ module.exports = async () => {
 
     /** Отслеживание консоли */
     await page.on('console', async (msg) => {
-      const args = msg.args();
-      const vals = [];
+      try {
+        const args = msg.args();
+        const vals = [];
 
-      if (msg.text().includes('DOZOR')) {
-        for (let i = 0; i < args.length; i++) {
-          vals.push(await args[i].jsonValue());
-        }
+        if (msg.text().includes('DOZOR')) {
+          for (let i = 0; i < args.length; i++) {
+            vals.push(await args[i].jsonValue());
+          }
 
-        const signal = vals.map((v) =>
-          typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
-        )[1];
+          const signal = vals.map((v) =>
+            typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
+          )[1];
 
-        if (signal.ignition !== null) {
-          if (!lodashIsEqual(deviceState, signal)) {
-            deviceState = signal;
-            await signalModel.create({ ...deviceState });
-            await deviceStateModel.findOneAndUpdate(deviceState);
+          if (signal.ignition !== null) {
+            if (!lodashIsEqual(deviceState, signal)) {
+              deviceState = signal;
+              await signalModel.create({ ...deviceState });
+              await deviceStateModel.findOneAndUpdate(deviceState);
+            }
           }
         }
-      }
+      } catch (e) {}
     });
 
     /** Ожидание кнопки для выхода из сна */
