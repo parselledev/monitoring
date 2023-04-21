@@ -21,6 +21,7 @@
     "express-rate-limit": "^6.6.0",
     "jsonwebtoken": "^9.0.0",
     "jwt-decoder": "^0.0.0",
+    "lodash": "^4.17.21",
     "mongoose": "^7.0.1",
     "mongoose-sequence": "^5.3.1",
     "multer": "^1.4.5-lts.1",

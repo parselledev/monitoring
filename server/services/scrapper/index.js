@@ -1,6 +1,8 @@
 const puppeteer = require('puppeteer');
 const signalModel = require('../../models/signal');
 const deviceStateModel = require('../../models/deviceState');
+const lodashIsEqual = require('lodash/isEqual');
+const { tr } = require('date-fns/locale');
 
 module.exports = async () => {
   /** Подготовка стейта  */
@@ -56,13 +58,13 @@ module.exports = async () => {
   delete deviceStateRemote.time;
 
   let deviceState = deviceStateRemote;
-  let prevDeviceState = deviceStateRemote;
 
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
+    // executablePath: '/usr/bin/chromium-browser',
+    // args: ['--no-sandbox'],
+    headless: false,
   });
 
   const page = await browser.newPage();
@@ -119,13 +121,10 @@ module.exports = async () => {
         )[1];
 
         if (signal.ignition !== null) {
-          deviceState = { ...signal };
-
-          if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
+          if (!lodashIsEqual(deviceState, signal)) {
+            deviceState = signal;
             await signalModel.create({ ...deviceState });
             await deviceStateModel.findOneAndUpdate(deviceState);
-
-            prevDeviceState = deviceState;
           }
         }
       }
