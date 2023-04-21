@@ -135,17 +135,15 @@ module.exports = async () => {
 
     setInterval(async () => {
       try {
-        await page.waitForSelector('.forms__button_warning', {
-          visible: true,
-          timeout: 0,
-        });
+        // await page.waitForSelector('.forms__button_warning', {
+        //   visible: true,
+        //   timeout: 0,
+        // });
         await page.$eval(
           '.forms__button_warning',
           async (elem) => await elem.click()
         );
-      } catch (e) {
-        console.log('interval error');
-      }
+      } catch (e) {}
     }, 1000 * 60 * 2); // 2 мин
   };
 
