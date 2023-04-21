@@ -22,8 +22,8 @@ const getTracks = async (req, res) => {
       result.push({
         id: temp[0]._id || 'asd',
         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-        start: temp[0].timestamp,
-        stop: temp[0].timestamp,
+        start: temp[0].createdAt,
+        stop: temp[0].createdAt,
         signals: temp,
       });
       temp = [];
@@ -41,8 +41,8 @@ const getTracks = async (req, res) => {
       result.push({
         id: temp[0]._id || 'asd',
         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-        start: temp[0].timestamp,
-        stop: temp[temp.length - 1].timestamp,
+        start: temp[0].createdAt,
+        stop: temp[temp.length - 1].createdAt,
         signals: temp,
       });
       temp = [];
@@ -52,8 +52,8 @@ const getTracks = async (req, res) => {
       result.push({
         id: temp[0]._id || 'asd',
         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-        start: temp[0].timestamp,
-        stop: temp[temp.length - 1].timestamp,
+        start: temp[0].createdAt,
+        stop: temp[temp.length - 1].createdAt,
         signals: temp,
       });
       temp = [];
@@ -74,8 +74,8 @@ const getTracks = async (req, res) => {
       : [
           {
             id: temp[0]._id,
-            start: temp[0].timestamp,
-            stop: temp[temp.length - 1].timestamp,
+            start: temp[0].createdAt,
+            stop: temp[temp.length - 1].createdAt,
             signals: temp,
           },
         ]

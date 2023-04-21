@@ -27,7 +27,7 @@ export const Panel = () => {
       signal.rear_right_door === "true" ||
       signal.hood === "true" ||
       signal.trunk === "true" ||
-      signal.guard === true
+      signal.guard === "true"
   );
 
   const handleMarkClick = (segment: any) => {
@@ -37,12 +37,12 @@ export const Panel = () => {
   const renderSegments = () =>
     panelData.map((segment: any, index: number) => (
       <ListItemButton
-        key={segment.timestamp}
+        key={segment.createdAt}
         onClick={() => handleMarkClick(segment)}
         style={{ position: "relative", padding: 0 }}
       >
         <Chip
-          label={`${moment(segment.timestamp).format("HH:mm")}`}
+          label={`${moment(segment.createdAt).format("HH:mm")}`}
           style={{ position: "absolute", left: 12, zIndex: 10 }}
         />
         <Car segment={segment} />

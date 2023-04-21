@@ -1,7 +1,6 @@
 const puppeteer = require('puppeteer');
 const signalModel = require('../../models/signal');
 const deviceStateModel = require('../../models/deviceState');
-const { tr } = require('date-fns/locale');
 
 module.exports = async () => {
   /** Подготовка стейта  */
@@ -35,7 +34,6 @@ module.exports = async () => {
 
   if (!deviceStateRemote) {
     const createdRemote = {
-      createdAt: null,
       geo: { lat: 0, lon: 0 },
       guard: true,
       ignition: false,
@@ -54,6 +52,8 @@ module.exports = async () => {
   delete deviceStateRemote._id;
   delete deviceStateRemote.updatedAt;
   delete deviceStateRemote.createdAt;
+  delete deviceStateRemote.__v;
+  delete deviceStateRemote.time;
 
   let deviceState = deviceStateRemote;
   let prevDeviceState = deviceStateRemote;
@@ -122,7 +122,7 @@ module.exports = async () => {
           deviceState = { ...signal };
 
           if (JSON.stringify(deviceState) !== JSON.stringify(prevDeviceState)) {
-            await signalModel.create({ ...deviceState, timestamp: Date.now() });
+            await signalModel.create({ ...deviceState });
             await deviceStateModel.findOneAndUpdate(deviceState);
 
             prevDeviceState = deviceState;

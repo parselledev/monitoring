@@ -56,8 +56,6 @@ export const tracksQuery = createQuery({
     }),
 });
 
-debug(tracksQuery.$data);
-
 export const $currentTrackId = createStore<number | null>(null);
 export const $currentTrack = combine(
   tracksQuery.$data,
@@ -78,6 +76,8 @@ export const $currentSegment = combine(
   }
 );
 export const $currentMark = createStore<any>(null);
+
+debug({ $currentTrack });
 
 export const setCurrentTrackId = createEvent<number>();
 export const setCurrentSegmentId = createEvent<number>();

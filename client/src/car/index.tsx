@@ -21,7 +21,7 @@ export const Car = ({ segment }: any) => {
     trunk,
   } = segment;
 
-  const lockSrc = guard === true ? lockImg : "";
+  const lockSrc = guard === "true" ? lockImg : "";
   const driverDoorSrc = driver_door === "true" ? driverDoorImg : "";
   const frontPassDoorSrc = front_pass_door === "true" ? frontPassDoorImg : "";
   const rearLeftDoorSrc = rear_left_door === "true" ? rearLeftDoorImg : "";
