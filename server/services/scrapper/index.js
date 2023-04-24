@@ -120,7 +120,7 @@ module.exports = async () => {
             typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
           )[1];
 
-          if (Boolean(signal.ignition)) {
+          if (typeof signal.ignition === 'boolean') {
             if (!lodashIsEqual(deviceState, signal)) {
               deviceState = signal;
               await signalModel.create({ ...deviceState });
