@@ -6,7 +6,7 @@ import {
   $currentSegmentId,
   $currentTrack,
   setCurrentMark,
-} from "../controls/model";
+} from "../tracks/model";
 import moment from "moment/moment";
 import { Car } from "../car";
 

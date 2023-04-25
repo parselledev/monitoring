@@ -1,7 +1,7 @@
 import { load } from "@2gis/mapgl";
 import { memo, useEffect } from "react";
 import { useUnit } from "effector-react/compat";
-import { $currentMark, $currentTrack } from "../controls/model";
+import { $currentMark, $currentTrack } from "../tracks/model";
 
 const MapWrapper = memo(
   () => {

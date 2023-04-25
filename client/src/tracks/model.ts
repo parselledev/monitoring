@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createQuery } from "@farfetched/core";
 import {
   combine,
@@ -13,18 +14,74 @@ import { debug, reset } from "patronum";
 export const ControlsGate = createGate();
 export const { open: controlsMounted, close: controlsUnmounted } = ControlsGate;
 
-const fxGetTracks = createEffect().use(tracksApi.getTracks);
+const fxGetSignals = createEffect().use(tracksApi.getSignals);
 
-export const tracksQuery = createQuery({
-  effect: fxGetTracks,
-  mapData: ({ result, params }: any) =>
-    result.reverse().map((track: any) => {
-      const signals = track.signals;
-      const lastSignal = signals[signals.length - 1];
+export const signalsQuery = createQuery({
+  effect: fxGetSignals,
+  mapData: ({ result: signals, params }: any) => {
+    const ENGINE_OFF = false;
+    const tracks = [];
+    let temp = [];
+    let currentType = null;
+
+    signals.filter(
+      (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
+    );
+
+    signals.forEach((signal, index) => {
+      if (index === 0 && signals.length === 1) {
+        temp.push(signal);
+        currentType = signal.ignition;
+        tracks.push({
+          id: temp[0]._id || "asd",
+          type: currentType === ENGINE_OFF ? "parking" : "moving",
+          start: temp[0].createdAt,
+          stop: temp[0].createdAt,
+          signals: temp,
+        });
+        temp = [];
+        return;
+      }
+
+      if (index === 0) {
+        temp.push(signal);
+        currentType = signal.ignition;
+        return;
+      }
+
+      if (currentType === signal.ignition && index === signals.length - 1) {
+        temp.push(signal);
+        tracks.push({
+          id: temp[0]._id || "asd",
+          type: currentType === ENGINE_OFF ? "parking" : "moving",
+          start: temp[0].createdAt,
+          stop: temp[temp.length - 1].createdAt,
+          signals: temp,
+        });
+        temp = [];
+      } else if (currentType === signal.ignition) {
+        temp.push(signal);
+      } else if (currentType !== signal.ignition) {
+        tracks.push({
+          id: temp[0]._id || "asd",
+          type: currentType === ENGINE_OFF ? "parking" : "moving",
+          start: temp[0].createdAt,
+          stop: temp[temp.length - 1].createdAt,
+          signals: temp,
+        });
+        temp = [];
+        temp.push(signal);
+        currentType = signal.ignition;
+      }
+    });
+
+    return tracks.reverse().map((track: any) => {
+      const readySignals = track.signals;
+      const lastSignal = readySignals[readySignals.length - 1];
 
       let alert = null;
 
-      signals.forEach((signal: any) => {
+      readySignals.forEach((signal: any) => {
         if (
           signal.front_pass_door === "true" ||
           signal.rear_right_door === "true" ||
@@ -43,7 +100,10 @@ export const tracksQuery = createQuery({
             color: "#e84646",
             label: "A",
             coords: [
-              ...signals.map((signal: any) => [signal.geo.lon, signal.geo.lat]),
+              ...readySignals.map((signal: any) => [
+                signal.geo.lon,
+                signal.geo.lat,
+              ]),
             ],
           },
           {
@@ -53,12 +113,13 @@ export const tracksQuery = createQuery({
           },
         ],
       };
-    }),
+    });
+  },
 });
 
 export const $currentTrackId = createStore<number | null>(null);
 export const $currentTrack = combine(
-  tracksQuery.$data,
+  signalsQuery.$data,
   $currentTrackId,
   (tracks: any, currentId) =>
     tracks?.find((track: any) => track.id === currentId)
@@ -77,8 +138,6 @@ export const $currentSegment = combine(
 );
 export const $currentMark = createStore<any>(null);
 
-debug({ $currentTrack });
-
 export const setCurrentTrackId = createEvent<number>();
 export const setCurrentSegmentId = createEvent<number>();
 export const setCurrentMark = createEvent<any>();
@@ -86,7 +145,7 @@ export const setCurrentMark = createEvent<any>();
 /** Запрос треков при маунте */
 sample({
   clock: controlsMounted,
-  target: tracksQuery.start,
+  target: signalsQuery.start,
 });
 
 /** Обработка текущего трека */
@@ -102,8 +161,10 @@ reset({
   target: [$currentSegmentId, $currentMark],
 });
 
-// result.length
-//   ? result
+debug(signalsQuery.$data);
+
+// tracks.length
+//   ? tracks
 //   : [
 //     {
 //       id: temp[0]?._id || null,
@@ -112,61 +173,3 @@ reset({
 //       signals: temp || null,
 //     },
 //   ]
-
-// const getTracks = async (req, res) => {
-//   const signalsData = await signal.find();
-//
-//   const result = [];
-//   let temp = [];
-//   let currentType = null;
-//
-//   signalsData.filter(
-//     (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
-//   );
-//
-//   signalsData.forEach((signal, index) => {
-//     if (index === 0 && signalsData.length === 1) {
-//       temp.push(signal);
-//       currentType = signal.ignition;
-//       result.push({
-//         id: temp[0]._id || 'asd',
-//         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-//         start: temp[0].createdAt,
-//         stop: temp[0].createdAt,
-//         signals: temp,
-//       });
-//       temp = [];
-//       return;
-//     }
-//
-//     if (index === 0) {
-//       temp.push(signal);
-//       currentType = signal.ignition;
-//       return;
-//     }
-//
-//     if (currentType === signal.ignition && index === signalsData.length - 1) {
-//       temp.push(signal);
-//       result.push({
-//         id: temp[0]._id || 'asd',
-//         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-//         start: temp[0].createdAt,
-//         stop: temp[temp.length - 1].createdAt,
-//         signals: temp,
-//       });
-//       temp = [];
-//     } else if (currentType === signal.ignition) {
-//       temp.push(signal);
-//     } else if (currentType !== signal.ignition) {
-//       result.push({
-//         id: temp[0]._id || 'asd',
-//         type: currentType === ENGINE_OFF ? 'parking' : 'moving',
-//         start: temp[0].createdAt,
-//         stop: temp[temp.length - 1].createdAt,
-//         signals: temp,
-//       });
-//       temp = [];
-//       temp.push(signal);
-//       currentType = signal.ignition;
-//     }
-//   });

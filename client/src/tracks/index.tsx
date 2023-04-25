@@ -4,7 +4,7 @@ import {
   $currentTrackId,
   ControlsGate,
   setCurrentTrackId,
-  tracksQuery,
+  signalsQuery,
 } from "./model";
 import React from "react";
 import {
@@ -18,10 +18,10 @@ import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import WarningIcon from "@mui/icons-material/Warning";
 
-export const Controls = () => {
+export const Tracks = () => {
   useGate(ControlsGate);
 
-  const { data, pending }: any = useUnit(tracksQuery);
+  const { data, pending }: any = useUnit(signalsQuery);
   const [currentTrackId] = useUnit([$currentTrackId]);
 
   if (pending) return <CircularProgress style={{ margin: "50px auto" }} />;
