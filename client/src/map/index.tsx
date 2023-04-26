@@ -16,8 +16,8 @@ export const Map = () => {
   const createRoute = (mapgl: any, map: any) => {
     if (!currentTrack) return null;
 
-    currentTrack.segments.forEach((segment: any, i: any) => {
-      const zIndex = currentTrack.segments.length - 1 - i;
+    currentTrack.markers.forEach((segment: any, i: any) => {
+      const zIndex = currentTrack.markers.length - 1 - i;
       new mapgl.Polyline(map, {
         coordinates: segment.coords,
         width: 10,
@@ -60,7 +60,7 @@ export const Map = () => {
       map = new mapgl.Map("map-container", {
         center: currentMark
           ? currentMark
-          : currentTrack?.segments[0].coords[0] || [20.522829, 54.71246],
+          : currentTrack?.markers[0].coords[0] || [20.522829, 54.71246],
         zoom: 16,
         key: "6aa7363e-cb3a-11ea-b2e4-f71ddc0b6dcb",
       });

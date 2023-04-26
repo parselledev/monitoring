@@ -19,91 +19,39 @@ const fxGetSignals = createEffect().use(tracksApi.getSignals);
 export const signalsQuery = createQuery({
   effect: fxGetSignals,
   mapData: ({ result: signals, params }: any) => {
-    const ENGINE_OFF = false;
-    const tracks = [];
-    let temp = [];
-    let currentType = null;
+    // signals.filter(
+    //   (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
+    // );
 
-    signals.filter(
-      (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
-    );
-
-    signals.forEach((signal, index) => {
-      if (index === 0 && signals.length === 1) {
-        temp.push(signal);
-        currentType = signal.ignition;
-        tracks.push({
-          id: temp[0]._id || "asd",
-          type: currentType === ENGINE_OFF ? "parking" : "moving",
-          start: temp[0].createdAt,
-          stop: temp[0].createdAt,
-          signals: temp,
-        });
-        temp = [];
-        return;
-      }
-
-      if (index === 0) {
-        temp.push(signal);
-        currentType = signal.ignition;
-        return;
-      }
-
-      if (currentType === signal.ignition && index === signals.length - 1) {
-        temp.push(signal);
-        tracks.push({
-          id: temp[0]._id || "asd",
-          type: currentType === ENGINE_OFF ? "parking" : "moving",
-          start: temp[0].createdAt,
-          stop: temp[temp.length - 1].createdAt,
-          signals: temp,
-        });
-        temp = [];
-      } else if (currentType === signal.ignition) {
-        temp.push(signal);
-      } else if (currentType !== signal.ignition) {
-        tracks.push({
-          id: temp[0]._id || "asd",
-          type: currentType === ENGINE_OFF ? "parking" : "moving",
-          start: temp[0].createdAt,
-          stop: temp[temp.length - 1].createdAt,
-          signals: temp,
-        });
-        temp = [];
-        temp.push(signal);
-        currentType = signal.ignition;
-      }
-    });
-
-    return tracks.reverse().map((track: any) => {
-      const readySignals = track.signals;
-      const lastSignal = readySignals[readySignals.length - 1];
-
-      let alert = null;
-
-      readySignals.forEach((signal: any) => {
-        if (
-          signal.front_pass_door === "true" ||
-          signal.rear_right_door === "true" ||
-          signal.hood === "true" ||
-          signal.trunk === "true"
-        ) {
-          alert = true;
+    const groupedSignals = signals
+      .reduce((acc, signal) => {
+        if (acc.length && acc[acc.length - 1][0].ignition === signal.ignition) {
+          acc[acc.length - 1].push(signal);
+        } else {
+          acc.push([signal]);
         }
-      });
+
+        return acc;
+      }, [])
+      .reverse();
+
+    return groupedSignals.map((group, index) => {
+      const firstSignal = group[0];
+      const lastSignal = group[group.length - 1];
+      const nextGroup = groupedSignals[index - 1] || null;
 
       return {
-        ...track,
-        alert: alert,
-        segments: [
+        id: firstSignal._id,
+        type: firstSignal.ignition === false ? "parking" : "moving",
+        start: firstSignal.createdAt,
+        stop: nextGroup ? nextGroup[0].createdAt : lastSignal.createdAt,
+        segments: group,
+        markers: [
           {
             color: "#e84646",
             label: "A",
             coords: [
-              ...readySignals.map((signal: any) => [
-                signal.geo.lon,
-                signal.geo.lat,
-              ]),
+              ...group.map((signal: any) => [signal.geo.lon, signal.geo.lat]),
             ],
           },
           {
@@ -112,6 +60,13 @@ export const signalsQuery = createQuery({
             coords: [[lastSignal.geo.lon, lastSignal.geo.lat]],
           },
         ],
+        alert: group.some(
+          (signal) =>
+            signal.front_pass_door === "true" ||
+            signal.rear_right_door === "true" ||
+            signal.hood === "true" ||
+            signal.trunk === "true"
+        ),
       };
     });
   },
@@ -161,7 +116,7 @@ reset({
   target: [$currentSegmentId, $currentMark],
 });
 
-debug(signalsQuery.$data);
+debug($currentTrack);
 
 // tracks.length
 //   ? tracks

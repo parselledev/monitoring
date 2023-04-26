@@ -1,25 +1,16 @@
 import { Chip, List, ListItemButton, Paper, Typography } from "@mui/material";
 import React from "react";
 import { useUnit } from "effector-react";
-import {
-  $currentSegment,
-  $currentSegmentId,
-  $currentTrack,
-  setCurrentMark,
-} from "../tracks/model";
+import { $currentTrack, setCurrentMark } from "../tracks/model";
 import moment from "moment/moment";
 import { Car } from "../car";
 
 export const Panel = () => {
-  const [currentSegment, currentSegmentId, currentTrack] = useUnit([
-    $currentSegment,
-    $currentSegmentId,
-    $currentTrack,
-  ]);
+  const [currentTrack] = useUnit([$currentTrack]);
 
   if (!currentTrack) return null;
 
-  const panelData = currentTrack.signals.filter(
+  const panelData = currentTrack.segments.filter(
     (signal: any) =>
       signal.driver_door === "true" ||
       signal.front_pass_door === "true" ||
