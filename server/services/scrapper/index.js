@@ -122,7 +122,9 @@ module.exports = async () => {
 
           if (typeof signal.ignition === 'boolean') {
             if (!lodashIsEqual(deviceState, signal)) {
-              if (signal.guard !== 'true' && deviceState.guard !== 'true') {
+              if (signal.guard === 'true' && deviceState.guard === 'true') {
+                return null;
+              } else {
                 deviceState = signal;
                 await signalModel.create({ ...deviceState });
                 await deviceStateModel.findOneAndUpdate(deviceState);
