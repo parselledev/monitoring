@@ -154,8 +154,6 @@ module.exports = async () => {
   await pagelogic();
 
   setInterval(async () => {
-    if (deviceState.guard === 'true') {
-      await pagelogic();
-    }
+    await pagelogic();
   }, 1000 * 60 * 30); // 30 мин
 };
