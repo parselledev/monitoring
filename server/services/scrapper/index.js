@@ -29,7 +29,7 @@ module.exports = async () => {
         trunk: states.trunk,
         hood: states.hood,
       });
-    }, 3000);
+    }, 1000);
   `;
 
   let deviceStateRemote = await deviceStateModel.findOne().lean();
@@ -148,7 +148,7 @@ module.exports = async () => {
           async (elem) => await elem.click()
         );
       } catch (e) {}
-    }, 1000 * 60 * 2); // 2 мин
+    }, 1000 * 60); // 1 мин
   };
 
   await pagelogic();
