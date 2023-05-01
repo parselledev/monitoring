@@ -26,19 +26,41 @@ export const Panel = () => {
   };
 
   const renderSegments = () =>
-    panelData.map((segment: any, index: number) => (
-      <ListItemButton
-        key={segment.createdAt}
-        onClick={() => handleMarkClick(segment)}
-        style={{ position: "relative", padding: 0 }}
-      >
-        <Chip
-          label={`${moment(segment.createdAt).format("HH:mm")}`}
-          style={{ position: "absolute", left: 12, zIndex: 10 }}
-        />
-        <Car segment={segment} />
-      </ListItemButton>
-    ));
+    panelData.map((segment: any, index: number) => {
+      const nextSegment = panelData[index + 1];
+      let dif, duration;
+
+      if (nextSegment) {
+        dif = moment.duration(
+          moment(nextSegment.createdAt).diff(moment(segment.createdAt))
+        );
+
+        duration =
+          dif.hours() === 0
+            ? `${dif.minutes()} мин`
+            : `${dif.hours()} ч : ${dif.minutes()} мин`;
+      }
+
+      return (
+        <div style={{ display: "grid", justifyItems: "center" }}>
+          <ListItemButton
+            key={segment.createdAt}
+            onClick={() => handleMarkClick(segment)}
+            style={{ position: "relative", padding: 0 }}
+          >
+            <Chip
+              label={`${moment(segment.createdAt).format("HH:mm")}`}
+              style={{ position: "absolute", left: 12, zIndex: 10 }}
+            />
+            <Car segment={segment} />
+          </ListItemButton>
+
+          {nextSegment && dif && dif.minutes() > 0 ? (
+            <Chip label={duration} />
+          ) : null}
+        </div>
+      );
+    });
 
   return (
     <Paper
