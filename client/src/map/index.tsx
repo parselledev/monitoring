@@ -60,8 +60,9 @@ export const Map = () => {
       map = new mapgl.Map("map-container", {
         center: currentMark
           ? currentMark
-          : currentTrack?.markers[0].coords[0] || [20.522829, 54.71246],
-        zoom: 16,
+          : currentTrack?.markers[currentTrack.markers.length - 1]
+              .coords[0] || [20.522829, 54.71246],
+        zoom: 15,
         key: "6aa7363e-cb3a-11ea-b2e4-f71ddc0b6dcb",
       });
 

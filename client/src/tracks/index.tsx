@@ -6,7 +6,7 @@ import {
   setCurrentTrackId,
   signalsQuery,
 } from "./model";
-import React from "react";
+import React, { useRef } from "react";
 import {
   Chip,
   CircularProgress,
@@ -17,12 +17,17 @@ import {
 import LocalParkingIcon from "@mui/icons-material/LocalParking";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import WarningIcon from "@mui/icons-material/Warning";
+import { Panel } from "../panel";
 
 export const Tracks = () => {
   useGate(ControlsGate);
 
   const { data, pending }: any = useUnit(signalsQuery);
   const [currentTrackId] = useUnit([$currentTrackId]);
+  const windowSize = useRef([window.innerWidth, window.innerHeight]);
+  const windowWidth = windowSize.current[0];
+
+  console.log(windowSize);
 
   if (pending) return <CircularProgress style={{ margin: "50px auto" }} />;
   if (!data) return <Typography variant="h6">Нет треков</Typography>;
@@ -85,11 +90,15 @@ export const Tracks = () => {
       style={{
         height: "100%",
         overflow: "hidden",
+        display: windowWidth > 500 ? "grid" : "unset",
+        gridTemplateColumns: "1fr 1fr",
       }}
     >
       <List style={{ maxHeight: "100%", overflowY: "scroll" }}>
         {renderTracks()}
       </List>
+
+      {windowWidth > 500 ? <Panel /> : null}
     </div>
   );
 };

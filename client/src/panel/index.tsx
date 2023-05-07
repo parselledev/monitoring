@@ -42,7 +42,12 @@ export const Panel = () => {
       }
 
       return (
-        <div style={{ display: "grid", justifyItems: "center" }}>
+        <div
+          style={{
+            display: "grid",
+            justifyItems: "center",
+          }}
+        >
           <ListItemButton
             key={segment.createdAt}
             onClick={() => handleMarkClick(segment)}
@@ -68,10 +73,12 @@ export const Panel = () => {
       style={{
         padding: 15,
         display: "grid",
+        alignContent: "start",
         gap: 10,
         gridTemplateColumns: "250px",
         justifyItems: "start",
         justifyContent: "start",
+        overflowY: "scroll",
       }}
     >
       <Typography variant="h5" gutterBottom>
