@@ -155,5 +155,5 @@ module.exports = async () => {
 
   setInterval(async () => {
     await pagelogic();
-  }, 1000 * 60 * 30); // 30 мин
+  }, 1000 * 60 * 60 * 3); // 3 часа
 };
