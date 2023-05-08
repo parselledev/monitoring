@@ -19,14 +19,17 @@ const fxGetSignals = createEffect().use(tracksApi.getSignals);
 export const signalsQuery = createQuery({
   effect: fxGetSignals,
   mapData: ({ result: signals, params }: any) => {
-    // signals.filter(
-    //   (signal) => !signal.geo?.lat || !signal.geo?.lon || !signal.ignition
-    // );
-
     const groupedSignals = signals
       .reduce((acc, signal) => {
         if (acc.length && acc[acc.length - 1][0].ignition === signal.ignition) {
-          acc[acc.length - 1].push(signal);
+          const lastAccItem = acc[acc.length - 1];
+          if (
+            signal.guard === "true" &&
+            lastAccItem[lastAccItem.length - 1].guard === "true"
+          ) {
+          } else {
+            acc[acc.length - 1].push(signal);
+          }
         } else {
           acc.push([signal]);
         }
