@@ -12,18 +12,19 @@ module.exports = async () => {
   // debug window.dozor._dozor._garage._devices.get(61739)._map._markers.get(61739)
 
   const injectionScript = `
-      setInterval(() => {
-      const connected = window.dozor._dozor._garage._devices.get(61739)._states.connected;
-      
-      if(!connected) {
-        window.dozor.run(window.dozor._session)
+    setInterval(() => {
+      const connected =
+        window.dozor._dozor._garage._devices.get(61739)?._states?.connected;
+
+      if (!connected) {
+        window.dozor.run(window.dozor._session);
       }
-    }, 1000 * 30) // 30 сек.
-    
+    }, 1000 * 10); // 10 сек.
+
     setInterval(() => {
       const device = window.dozor._dozor._garage._devices.get(61739);
-      const states = device._states;
-      const geo = device._map._markers.get(61739)._geo.coords;
+      const states = device?._states;
+      const geo = device?._map?._markers.get(61739)?._geo?.coords;
 
       console.log('DOZOR', {
         geo: geo,
@@ -111,6 +112,16 @@ module.exports = async () => {
     content: injectionScript,
   });
 
+  /** Ожидание кнопки для выхода из сна */
+  setInterval(async () => {
+    try {
+      await page.$eval(
+        '.forms__button_warning',
+        async (elem) => await elem.click()
+      );
+    } catch (e) {}
+  }, 1000 * 60); // 1 мин
+
   /** Отслеживание консоли */
   await page.on('console', async (msg) => {
     try {
@@ -140,16 +151,6 @@ module.exports = async () => {
       }
     } catch (e) {}
   });
-
-  /** Ожидание кнопки для выхода из сна */
-  setInterval(async () => {
-    try {
-      await page.$eval(
-        '.forms__button_warning',
-        async (elem) => await elem.click()
-      );
-    } catch (e) {}
-  }, 1000 * 60); // 1 мин
 
   // setInterval(async () => {
   //   await pagelogic();
