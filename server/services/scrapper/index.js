@@ -12,12 +12,19 @@ module.exports = async () => {
   // debug window.dozor._dozor._garage._devices.get(61739)._map._markers.get(61739)
 
   const injectionScript = `
-  setInterval(() => {
+      setInterval(() => {
+      const connected = window.dozor._dozor._garage._devices.get(61739)._states.connected;
+      
+      if(!connected) {
+        window.dozor.run(window.dozor._session)
+      }
+    }, 1000 * 30) // 30 сек.
+    
+    setInterval(() => {
       const device = window.dozor._dozor._garage._devices.get(61739);
-      const state = device._device_info.state;
       const states = device._states;
       const geo = device._map._markers.get(61739)._geo.coords;
-      
+
       console.log('DOZOR', {
         geo: geo,
         guard: states.guard,
@@ -97,63 +104,54 @@ module.exports = async () => {
 
   /** --------- Логика страницы и интервальная перезагрузка ------------- */
 
-  const pagelogic = async () => {
-    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+  // await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
 
-    /** Инъекция скрипта */
-    await page.addScriptTag({
-      content: injectionScript,
-    });
+  /** Инъекция скрипта */
+  await page.addScriptTag({
+    content: injectionScript,
+  });
 
-    /** Отслеживание консоли */
-    await page.on('console', async (msg) => {
-      try {
-        const args = msg.args();
-        const vals = [];
+  /** Отслеживание консоли */
+  await page.on('console', async (msg) => {
+    try {
+      const args = msg.args();
+      const vals = [];
 
-        if (msg.text().includes('DOZOR')) {
-          for (let i = 0; i < args.length; i++) {
-            vals.push(await args[i].jsonValue());
-          }
+      if (msg.text().includes('DOZOR')) {
+        for (let i = 0; i < args.length; i++) {
+          vals.push(await args[i].jsonValue());
+        }
 
-          const signal = vals.map((v) =>
-            typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
-          )[1];
+        const signal = vals.map((v) =>
+          typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
+        )[1];
 
-          if (typeof signal.ignition === 'boolean') {
-            if (!lodashIsEqual(deviceState, signal)) {
-              if (signal.guard === 'true' && deviceState.guard === 'true') {
-                return null;
-              } else {
-                deviceState = signal;
-                await signalModel.create({ ...deviceState });
-                await deviceStateModel.findOneAndUpdate(deviceState);
-              }
+        if (typeof signal.ignition === 'boolean') {
+          if (!lodashIsEqual(deviceState, signal)) {
+            if (signal.guard === 'true' && deviceState.guard === 'true') {
+              return null;
+            } else {
+              deviceState = signal;
+              await signalModel.create({ ...deviceState });
+              await deviceStateModel.findOneAndUpdate(deviceState);
             }
           }
         }
-      } catch (e) {}
-    });
+      }
+    } catch (e) {}
+  });
 
-    /** Ожидание кнопки для выхода из сна */
-
-    setInterval(async () => {
-      try {
-        // await page.waitForSelector('.forms__button_warning', {
-        //   visible: true,
-        //   timeout: 0,
-        // });
-        await page.$eval(
-          '.forms__button_warning',
-          async (elem) => await elem.click()
-        );
-      } catch (e) {}
-    }, 1000 * 60); // 1 мин
-  };
-
-  await pagelogic();
-
+  /** Ожидание кнопки для выхода из сна */
   setInterval(async () => {
-    await pagelogic();
-  }, 1000 * 60 * 60 * 3); // 3 часа
+    try {
+      await page.$eval(
+        '.forms__button_warning',
+        async (elem) => await elem.click()
+      );
+    } catch (e) {}
+  }, 1000 * 60); // 1 мин
+
+  // setInterval(async () => {
+  //   await pagelogic();
+  // }, 1000 * 60 * 60 * 6); // 6 часов
 };
