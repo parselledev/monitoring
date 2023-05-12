@@ -23,11 +23,11 @@ module.exports = async () => {
   }, 1000 * 60); // 1 мин.
 
   setInterval(() => {
-    const device = window.dozor._dozor._garage._devices.get(61739) || null;
-    const states = device?._states || null;
-    const geo = device?._map?._markers.get(61739)?._geo?.coords || null;
+    const device = window.dozor._dozor._garage._devices.get(61739);
+    const states = device?._states;
+    const geo = device?._map?._markers.get(61739)?._geo?.coords;
 
-    if (states) {
+    if (states && geo) {
       console.log('DOZOR', {
         geo: geo,
         guard: states.guard,
