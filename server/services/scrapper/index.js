@@ -108,54 +108,56 @@ module.exports = async () => {
 
   /** --------- Логика страницы и интервальная перезагрузка ------------- */
 
-  // await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+  const pageLogic = async () => {
+    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
 
-  /** Инъекция скрипта */
-  await page.addScriptTag({
-    content: injectionScript,
-  });
+    /** Инъекция скрипта */
+    await page.addScriptTag({
+      content: injectionScript,
+    });
 
-  /** Ожидание кнопки для выхода из сна */
-  setInterval(async () => {
-    try {
-      await page.$eval(
-        '.forms__button_warning',
-        async (elem) => await elem.click()
-      );
-    } catch (e) {}
-  }, 1000 * 60); // 1 мин
+    /** Ожидание кнопки для выхода из сна */
+    setInterval(async () => {
+      try {
+        await page.$eval(
+          '.forms__button_warning',
+          async (elem) => await elem.click()
+        );
+      } catch (e) {}
+    }, 1000 * 60); // 1 мин
 
-  /** Отслеживание консоли */
-  await page.on('console', async (msg) => {
-    try {
-      const args = msg.args();
-      const vals = [];
+    /** Отслеживание консоли */
+    await page.on('console', async (msg) => {
+      try {
+        const args = msg.args();
+        const vals = [];
 
-      if (msg.text().includes('DOZOR')) {
-        for (let i = 0; i < args.length; i++) {
-          vals.push(await args[i].jsonValue());
-        }
-
-        const signal = vals.map((v) =>
-          typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
-        )[1];
-
-        // if (typeof signal.ignition === 'boolean') {
-        if (!lodashIsEqual(deviceState, signal)) {
-          if (signal.guard === 'true' && deviceState.guard === 'true') {
-            return null;
-          } else {
-            deviceState = signal;
-            await signalModel.create({ ...deviceState });
-            await deviceStateModel.findOneAndUpdate(deviceState);
+        if (msg.text().includes('DOZOR')) {
+          for (let i = 0; i < args.length; i++) {
+            vals.push(await args[i].jsonValue());
           }
-        }
-        // }
-      }
-    } catch (e) {}
-  });
 
-  // setInterval(async () => {
-  //   await pagelogic();
-  // }, 1000 * 60 * 60 * 6); // 6 часов
+          const signal = vals.map((v) =>
+            typeof v === 'object' ? JSON.parse(JSON.stringify(v, null, 2)) : v
+          )[1];
+
+          // if (typeof signal.ignition === 'boolean') {
+          if (!lodashIsEqual(deviceState, signal)) {
+            if (signal.guard === 'true' && deviceState.guard === 'true') {
+              return null;
+            } else {
+              deviceState = signal;
+              await signalModel.create({ ...deviceState });
+              await deviceStateModel.findOneAndUpdate(deviceState);
+            }
+          }
+          // }
+        }
+      } catch (e) {}
+    });
+  };
+
+  setInterval(async () => {
+    await pageLogic();
+  }, 1000 * 60 * 60 * 6); // 6 часов
 };
