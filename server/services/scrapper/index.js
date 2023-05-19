@@ -73,9 +73,8 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    // executablePath: '/usr/bin/chromium-browser',
-    headless: false,
-    // args: ['--no-sandbox'],
+    executablePath: '/usr/bin/chromium-browser',
+    args: ['--no-sandbox'],
   });
 
   const page = await browser.newPage();
