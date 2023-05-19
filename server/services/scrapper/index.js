@@ -73,8 +73,9 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
+    // executablePath: '/usr/bin/chromium-browser',
+    headless: false,
+    // args: ['--no-sandbox'],
   });
 
   const page = await browser.newPage();
@@ -92,11 +93,13 @@ module.exports = async () => {
       await page.waitForSelector("input[type='password']", { visible: true });
       await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
 
-      await page.$eval('.btn-primary', async (elem) => await elem.click());
-
-      // await page.waitForSelector('.geomap-marker__arrow');
+      const tryClick = setInterval(async () => {
+        await page.$eval('.btn-primary', async (elem) => await elem.click());
+      }, 1000);
 
       await page.waitForSelector('.device__image');
+
+      clearInterval(tryClick);
 
       break;
     } catch (e) {
