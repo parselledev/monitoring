@@ -12,6 +12,7 @@ module.exports = async () => {
   // debug window.dozor._dozor._garage._devices.get(61739)._map._markers.get(61739)
 
   const injectionScript = `
+  console.log('injected');
   setInterval(() => {
     const connected =
       window.dozor._dozor._garage._devices.get(61739)?._states?.connected ||
@@ -73,8 +74,9 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
+    // executablePath: '/usr/bin/chromium-browser',
+    // args: ['--no-sandbox'],
+    headless: false,
   });
 
   const page = await browser.newPage();
@@ -98,7 +100,7 @@ module.exports = async () => {
 
       await page.waitForSelector('.device__image');
 
-      clearInterval(tryClick);
+      await clearInterval(tryClick);
 
       break;
     } catch (e) {
@@ -158,6 +160,8 @@ module.exports = async () => {
       } catch (e) {}
     });
   };
+
+  await pageLogic();
 
   setInterval(async () => {
     await pageLogic();
