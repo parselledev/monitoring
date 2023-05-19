@@ -48,7 +48,7 @@ module.exports = async () => {
   if (!deviceStateRemote) {
     const createdRemote = {
       geo: { lat: 0, lon: 0 },
-      guard: true,
+      guard: false,
       ignition: false,
       driver_door: false,
       front_pass_door: false,
