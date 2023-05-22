@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const signalModel = require('../../models/signal');
 const deviceStateModel = require('../../models/deviceState');
 const lodashIsEqual = require('lodash/isEqual');
-const { tr } = require('date-fns/locale');
+const { tr, ca } = require('date-fns/locale');
 
 module.exports = async () => {
   /** Подготовка стейта  */
@@ -95,7 +95,9 @@ module.exports = async () => {
       await page.type("input[type='password']", process.env.DOZOR_PASSWORD);
 
       const tryClick = setInterval(async () => {
-        await page.$eval('.btn-primary', async (elem) => await elem.click());
+        try {
+          await page.$eval('.btn-primary', async (elem) => await elem.click());
+        } catch (e) {}
       }, 1000);
 
       await page.waitForSelector('.device__image');
@@ -113,8 +115,6 @@ module.exports = async () => {
   /** --------- Логика страницы и интервальная перезагрузка ------------- */
 
   const pageLogic = async () => {
-    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
-
     /** Инъекция скрипта */
     await page.addScriptTag({
       content: injectionScript,
@@ -164,6 +164,9 @@ module.exports = async () => {
   await pageLogic();
 
   setInterval(async () => {
-    await pageLogic();
+    try {
+      await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+      await pageLogic();
+    } catch (e) {}
   }, 1000 * 60 * 60 * 6); // 6 часов
 };
