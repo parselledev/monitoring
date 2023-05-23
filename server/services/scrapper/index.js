@@ -74,9 +74,9 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
-    // headless: false,
+    // executablePath: '/usr/bin/chromium-browser',
+    // args: ['--no-sandbox'],
+    headless: false,
   });
 
   const page = await browser.newPage();
@@ -96,6 +96,7 @@ module.exports = async () => {
 
       const tryClick = setInterval(async () => {
         try {
+          await page.waitForSelector('.btn-primary', { visible: true });
           await page.$eval('.btn-primary', async (elem) => await elem.click());
         } catch (e) {}
       }, 1000);
