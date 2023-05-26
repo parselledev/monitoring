@@ -147,15 +147,15 @@ module.exports = async () => {
           )[1];
 
           // if (typeof signal.ignition === 'boolean') {
-          // if (!lodashIsEqual(deviceState, signal)) {
-          if (signal.guard === 'true' && deviceState.guard === 'true') {
-            return null;
-          } else {
-            deviceState = signal;
-            await signalModel.create({ ...deviceState });
-            await deviceStateModel.findOneAndUpdate(deviceState);
+          if (!lodashIsEqual(deviceState, signal)) {
+            if (signal.guard === 'true' && deviceState.guard === 'true') {
+              return null;
+            } else {
+              deviceState = signal;
+              await signalModel.create({ ...deviceState });
+              await deviceStateModel.findOneAndUpdate(deviceState);
+            }
           }
-          // }
           // }
         }
       } catch (e) {}
