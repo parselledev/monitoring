@@ -21,7 +21,7 @@ module.exports = async () => {
     if (!connected) {
       window.dozor.run(window.dozor._session);
     }
-  }, 1000 * 60); // 1 мин.
+  }, 1000 * 30); // 30 сек.
 
   setInterval(() => {
     const device = window.dozor._dozor._garage._devices.get(61739);
