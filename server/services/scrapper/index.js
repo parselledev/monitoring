@@ -169,5 +169,5 @@ module.exports = async () => {
       await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
       await pageLogic();
     } catch (e) {}
-  }, 1000 * 60 * 60 * 6); // 6 часов
+  }, 1000 * 60 * 60); // 1 час
 };
