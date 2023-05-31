@@ -76,6 +76,7 @@ module.exports = async () => {
   const browser = await puppeteer.launch({
     executablePath: '/usr/bin/chromium-browser',
     args: ['--no-sandbox'],
+
     // headless: false,
   });
 
@@ -122,14 +123,14 @@ module.exports = async () => {
     });
 
     /** Ожидание кнопки для выхода из сна */
-    // setInterval(async () => {
-    //   try {
-    //     await page.$eval(
-    //       '.forms__button_warning',
-    //       async (elem) => await elem.click()
-    //     );
-    //   } catch (e) {}
-    // }, 1000 * 60); // 1 мин
+    setInterval(async () => {
+      try {
+        await page.$eval(
+          '.forms__button_warning',
+          async (elem) => await elem.click()
+        );
+      } catch (e) {}
+    }, 1000 * 60 * 2); // 2 мин
 
     /** Отслеживание консоли */
     await page.on('console', async (msg) => {
@@ -169,5 +170,5 @@ module.exports = async () => {
       await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
       await pageLogic();
     } catch (e) {}
-  }, 1000 * 60 * 60); // 1 час
+  }, 1000 * 60 * 20); // 20 мин
 };
