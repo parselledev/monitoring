@@ -21,7 +21,7 @@ module.exports = async () => {
     if (!connected) {
       window.dozor.run(window.dozor._session);
     }
-  }, 1000 * 1); // 1 мин.
+  }, 1000 * 60 * 2); // 2 мин.
 
   setInterval(() => {
     const device = window.dozor._dozor._garage._devices.get(61739);
@@ -41,7 +41,7 @@ module.exports = async () => {
         hood: states.hood,
       });
     }
-  }, 2000);
+  }, 1000 * 2);
   `;
 
   let deviceStateRemote = await deviceStateModel.findOne().lean();
@@ -123,14 +123,14 @@ module.exports = async () => {
     });
 
     /** Ожидание кнопки для выхода из сна */
-    setInterval(async () => {
-      try {
-        await page.$eval(
-          '.forms__button_warning',
-          async (elem) => await elem.click()
-        );
-      } catch (e) {}
-    }, 1000 * 60 * 2); // 2 мин
+    // setInterval(async () => {
+    //   try {
+    //     await page.$eval(
+    //       '.forms__button_warning',
+    //       async (elem) => await elem.click()
+    //     );
+    //   } catch (e) {}
+    // }, 1000 * 60 * 2); // 2 мин
 
     /** Отслеживание консоли */
     await page.on('console', async (msg) => {
