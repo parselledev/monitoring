@@ -102,8 +102,6 @@ module.exports = async () => {
         } catch (e) {}
       }, 1000);
 
-      await page.waitForSelector('.device__image');
-
       await clearInterval(tryClick);
 
       break;
