@@ -21,7 +21,7 @@ module.exports = async () => {
     if (!connected) {
       window.dozor.run(window.dozor._session);
     }
-  }, 1000 * 60 * 2); // 2 мин.
+  }, 1000 * 30); // 2 мин.
 
   setInterval(() => {
     const device = window.dozor._dozor._garage._devices.get(61739);
@@ -74,10 +74,10 @@ module.exports = async () => {
   /** Создание браузера */
 
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium-browser',
-    args: ['--no-sandbox'],
+    // executablePath: '/usr/bin/chromium-browser',
+    // args: ['--no-sandbox'],
 
-    // headless: false,
+    headless: false,
   });
 
   const page = await browser.newPage();
@@ -102,6 +102,8 @@ module.exports = async () => {
         } catch (e) {}
       }, 1000);
 
+      await page.waitForSelector('.device__image');
+
       await clearInterval(tryClick);
 
       break;
@@ -115,20 +117,22 @@ module.exports = async () => {
   /** --------- Логика страницы и интервальная перезагрузка ------------- */
 
   const pageLogic = async () => {
+    await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+
     /** Инъекция скрипта */
     await page.addScriptTag({
       content: injectionScript,
     });
 
     /** Ожидание кнопки для выхода из сна */
-    // setInterval(async () => {
-    //   try {
-    //     await page.$eval(
-    //       '.forms__button_warning',
-    //       async (elem) => await elem.click()
-    //     );
-    //   } catch (e) {}
-    // }, 1000 * 60 * 2); // 2 мин
+    setInterval(async () => {
+      try {
+        await page.$eval(
+          '.forms__button_warning',
+          async (elem) => await elem.click()
+        );
+      } catch (e) {}
+    }, 1000 * 60 * 2); // 2 мин
 
     /** Отслеживание консоли */
     await page.on('console', async (msg) => {
