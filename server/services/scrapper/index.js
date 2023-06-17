@@ -170,7 +170,22 @@ module.exports = async () => {
             // if (signal.guard === 'true' && deviceState.guard === 'true') {
             //   return null;
             // } else {
-            deviceState = signal;
+            if (signal.guard === null) {
+              deviceState = {
+                ...signal,
+                guard: deviceState.guard,
+                ignition: deviceState.ignition,
+                driver_door: deviceState.door_fl,
+                front_pass_door: deviceState.door_fr,
+                rear_left_door: deviceState.door_rl,
+                rear_right_door: deviceState.door_rr,
+                trunk: deviceState.trunk,
+                hood: deviceState.hood,
+              };
+            } else {
+              deviceState = signal;
+            }
+
             await signalModel.create({ ...deviceState });
             await deviceStateModel.findOneAndUpdate(deviceState);
             // }
