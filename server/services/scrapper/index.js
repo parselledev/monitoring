@@ -24,7 +24,10 @@ module.exports = async () => {
       const geo = device?._control._device_info.state.geo;
       
       console.log('DOZOR', {
-        geo: geo,
+        geo: {
+          lat: geo.lat,
+          lon: get.lon 
+        },
         guard: states.guard,
         ignition: states.ignition,
         driver_door: states.door_fl,
