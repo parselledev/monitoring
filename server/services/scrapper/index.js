@@ -19,9 +19,25 @@ module.exports = async () => {
       false;
 
     if (!connected) {
+      const device = window.dozor._dozor._garage._devices.get(61739);
+      const states = device?._states;
+      const geo = device?._control._device_info.state.geo;
+      
+      console.log('DOZOR', {
+        geo: geo,
+        guard: states.guard,
+        ignition: states.ignition,
+        driver_door: states.door_fl,
+        front_pass_door: states.door_fr,
+        rear_left_door: states.door_rl,
+        rear_right_door: states.door_rr,
+        trunk: states.trunk,
+        hood: states.hood,
+      });
+      
       window.dozor.run(window.dozor._session);
     }
-  }, 1000 * 30); // 2 мин.
+  }, 1000 * 30); // 30 сек
 
   setInterval(() => {
     const device = window.dozor._dozor._garage._devices.get(61739);
